@@ -353,20 +353,26 @@ class Grid:
 
     
     def decide_step_search(self, ant):
-        possible_steps = self.possible_steps_list(coord, origin)
+        possible_steps = self.possible_steps_list(ant)
         
         pos_step = []
         p_food_n = []
+        p_moore = []
         for p in possible_steps:
             if p in self.food_location.keys():
                 return p
             if p in self.food_neighbours():
                 p_food_n.append(p)
+            if p in self.food_neighbours():
+                p_moore.append(p)
             if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
                 pos_step.append(p)
         
         if p_food_n != []:
             return random.choice(p_food_n)
+
+        elif p_moore != []:
+            return random.choice(p_moore)
         
         elif pos_step != []:
             return random.choice(pos_step)
@@ -383,6 +389,12 @@ class Grid:
         for food_loc in self.food_location.keys():
             food_neigh.append(self.check_neighbours(food_loc))
         return sum(food_neigh, [])
+
+    def food_moore_neigh(self):
+        moore = []
+        for n in self.food_neighbours():
+            moore.append(self.check_neighbours(n))
+        return sum(moore, [])
         
     # adds onse work ant        
     def add_work_ant(self):
