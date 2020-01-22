@@ -353,6 +353,8 @@ class Grid:
     '''
     
     def decide_step_search(self, ant):
+        coord = ant.getLocation()
+        origin = ant.getOrigin()
         possible_steps = self.possible_steps_list(ant)
         
         pos_step = []
