@@ -285,7 +285,7 @@ class Grid:
 
         return best_neigh
 
-    '''
+    
     def decide_step_worker(self, ant):
         coord = ant.getLocation()
         origin = ant.getOrigin()
@@ -298,7 +298,7 @@ class Grid:
             # if a possible step contains pheromone, add it to the possible steps list
             if 0 < self.get_kind(p) <= 1:
                 pos_step.append(p)
-                pos_step_sum += self.get_kind(p)
+                pos_step_sum += self.get_kind(p)**2
                 
             # if a food location is a possible step: return this as only possible step
             if p in self.food_location.keys():
@@ -313,7 +313,7 @@ class Grid:
         
         for pos in pos_step:
             self.get_kind(pos)
-            probability_distribution.append(self.get_kind(pos)/pos_step_sum)
+            probability_distribution.append(((self.get_kind(pos))**2/pos_step_sum))
             
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
@@ -350,7 +350,7 @@ class Grid:
             step_to_take = random.choice(possible_steps)
 
         return step_to_take
-
+    '''
     
     def decide_step_search(self, ant):
         coord = ant.getLocation()
@@ -533,7 +533,7 @@ class Grid:
                 plt.pause(0.0001)
                 
 
-            while self.total_found_food_value != 0:
+            while self.total_found_food_value != 0 and len(self.ants) != 0:
                 while self.n_work != 0:
                     self.release_ant('w')
                     self.renew_board()
@@ -545,7 +545,8 @@ class Grid:
                 self.renew_board()
                 drawnow(self.showGrid)  # Call drawnow to update our live graph
                 plt.pause(0.0001)
-       	
+
+       	    break
             
     def showGrid(self):
         # Amount of different colors for pheromones
@@ -595,7 +596,7 @@ class Grid:
 world = Grid([20, 0.7, 0.01, 2, 3])
 world.setNestLocation((14,3))
 world.setFoodSource((2,1), 20)
-world.setFoodSource((5,18), 20)
+world.setFoodSource((11,18), 20)
 
 # world.simulation()
 
