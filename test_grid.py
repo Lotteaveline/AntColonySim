@@ -353,7 +353,7 @@ class Grid:
     '''
     
     def decide_step_search(self, ant):
-        possible_steps = self.possible_steps_list(coord, origin)
+        possible_steps = self.possible_steps_list(ant)
         
         pos_step = []
         p_food_n = []
