@@ -153,6 +153,7 @@ class Grid:
         self.return_reward = 1
         self.food_reward = 2*self.cost_per_step * (para[0]-1) +1
         self.return_reward = 0
+        self.amt_steps = 0
         
 
     # Get neighbour xy coordinates as tuple  
@@ -196,6 +197,11 @@ class Grid:
         x = int(coord[0])
         y = int(coord[1])
         return self.grid[y, x]
+
+    def get_pheromone(self, coord):
+        x = int(coord[0])
+        y = int(coord[1])
+        return self.grid_no_ants[y, x]
     
     # returns the distance between a coordinate and the ants its origin
     def origin_distance(self, coord, origin):
@@ -206,7 +212,7 @@ class Grid:
     def setKind(self, coord, value):
         x = int(coord[0])
         y = int(coord[1])
-        if value is not 5 and value is not 25 and value < 100:
+        if value is not self.ant_value and value is not self.nest_value and value < self.food_source_value:
             return "Invalid value"
         self.grid[y, x] = value
         
@@ -221,7 +227,6 @@ class Grid:
         y = int(coord[1])
         self.setKind(coord, self.food_source_value)
         self.food_location[coord] = amtFood
-        print(self.food_location)
 
     def addPheromone(self, ant):
         coord = ant.getLocation()
@@ -239,7 +244,7 @@ class Grid:
             if self.grid_no_ants[y,x] >= 1:
                 self.grid[y,x] = 1.00
                 self.grid_no_ants[y, x] = 1.00    
-
+    '''
     def pheromoneFade(self, coord):
         # The cell must already have pheromones
         x = int(coord[0])
@@ -261,6 +266,19 @@ class Grid:
         if self.get_kind(coord) <= 0:
             self.grid[y,x] = 0
             self.grid[y,x] = 0
+    '''
+    def pheromoneFade(self, coord):
+        # The cell must already have pheromones
+        x = int(coord[0])
+        y = int(coord[1])
+
+        self.grid[y, x] -= self.pheromone_fade
+        self.grid_no_ants[y, x] -= self.pheromone_fade   
+        
+        if self.get_pheromone(coord) <= 0:
+            self.grid[y,x] = 0
+            self.grid[y,x] = 0
+
 
     def retrieveFood(self, coord):
         # The cell must be of the kind food source
@@ -296,9 +314,9 @@ class Grid:
         
         for p in possible_steps:
             # if a possible step contains pheromone, add it to the possible steps list
-            if 0 < self.get_kind(p) <= 1:
+            if 0 < self.get_pheromone(p) <= 1:
                 pos_step.append(p)
-                pos_step_sum += self.get_kind(p)**2
+                pos_step_sum += self.get_pheromone(p)**2
                 
             # if a food location is a possible step: return this as only possible step
             if p in self.food_location.keys():
@@ -312,8 +330,8 @@ class Grid:
         probability_distribution = []
         
         for pos in pos_step:
-            self.get_kind(pos)
-            probability_distribution.append(((self.get_kind(pos))**2/pos_step_sum))
+            self.get_pheromone(pos)
+            probability_distribution.append(((self.get_pheromone(pos))**2/pos_step_sum))
             
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
@@ -354,6 +372,9 @@ class Grid:
     
     def decide_step_search(self, ant):
         possible_steps = self.possible_steps_list(ant)
+
+        coord = ant.getLocation()
+        origin = ant.getOrigin()
         
         pos_step = []
         p_food_n = []
@@ -402,16 +423,18 @@ class Grid:
 
         
     def return_of_ant(self, ant):
+        found_food_source = ant.getOrigin()
         if ant.getKind() == 's':
 
             if not self.return_1:
                 self.return_1 = True
 
-        found_food_source = ant.getOrigin()
+            if found_food_source not in self.found_food_sources:
+                self.found_food_sources.append(found_food_source)
+
             
-        if found_food_source not in self.found_food_sources:
-            self.found_food_sources.append(found_food_source)
-            self.total_found_food_value += self.food_location[found_food_source]
+        #if found_food_source not in self.found_food_sources:
+        #    self.total_found_food_value += self.food_location[found_food_source]
             
         self.ants.remove(ant)
 
@@ -436,7 +459,7 @@ class Grid:
     # Then we add the ants on their new locations, by first determining the location of an ant after it sets
     # a step, and then setting this location of the grid to ant_value
     def renew_board(self):
-                
+        self.amt_steps += 1       
         self.grid = copy.deepcopy(self.grid_no_ants)
         
         for i in range(len(self.grid_no_ants)):
@@ -451,6 +474,12 @@ class Grid:
                 # If cell is empty but contains a pheromone (hier gaat het goed met nest_value)
                 if 0 < cell_value <= 1:
                     self.pheromoneFade(curr_cell)
+
+                if (i,j) in self.food_location and self.food_location[(i,j)] == 0:
+                    self.grid_no_ants[j,i] = 0
+                    self.grid[j,i] = 0
+                    self.food_location.pop((i,j))
+                    self.found_food_sources.remove((i,j))
 
         
         # Determine the new location of each ant and set this new location on the board to ant_value
@@ -509,50 +538,57 @@ class Grid:
             # If after the step the ant is back at the nest location, 
             # the ant has done its job and can be removed
             if new_location == self.nest_location and ant.getOrigin() != self.nest_location:
-                self.total_cost -= self.return_reward
+                #self.total_cost -= self.return_reward
                 self.return_of_ant(ant)
                 continue
                 
             x_new_loc = int(new_location[0])
             y_new_loc = int(new_location[1])
-            
+
             self.grid[y_new_loc, x_new_loc] += self.ant_value
-            
+
+
+
     # this is the simulation function where the complete sotry of the
     def simulation(self):
         cnt = 0
         while True:
-            cnt += 1
-            if cnt > 1500:
-                break
 
             while self.n_search != 0:
                 self.release_ant('s')
                 self.renew_board()
-                drawnow(self.showGrid)  # Call drawnow to update our live graph
+                drawnow(self.showGrid)
                 plt.pause(0.0001)
         
             # if no search ant has returned, just keep updating the board
             while self.return_1 == False: 
                 self.renew_board()
-                drawnow(self.showGrid)  # Call drawnow to update our live graph
+                drawnow(self.showGrid)
                 plt.pause(0.0001)
                 
 
-            while self.total_found_food_value != 0 and len(self.ants) != 0:
+            while self.food_location != {} and len(self.ants) != 0:
                 while self.n_work != 0:
-                    self.release_ant('w')
+                    cnt += 1
+
+                    if cnt % 5 == 0 and len(self.found_food_sources) != 0:
+                        self.release_ant('w')
+
                     self.renew_board()
-                    drawnow(self.showGrid)  # Call drawnow to update our live graph
+                    drawnow(self.showGrid)
                     plt.pause(0.0001)
-    #                 print(self.grid)
 
                 # kep on renewing the board 
                 self.renew_board()
-                drawnow(self.showGrid)  # Call drawnow to update our live graph
+                drawnow(self.showGrid)
                 plt.pause(0.0001)
 
-       	    break
+            break
+        print("Total cost: ", self.total_cost)
+        print("Amount of board renewals: ", self.amt_steps)
+        self.showGrid()
+        plt.show()
+       	    
             
     def showGrid(self):
         # Amount of different colors for pheromones
@@ -566,16 +602,18 @@ class Grid:
         other_colors = ['white', 'black', 'white', 'peru', 'white', 'forestgreen']
         
         # Boundaries for the values of the other colors
-        other_bounds = [1.00001, self.ant_value - 0.001, 11.00001, self.nest_value - 0.001, self.nest_value + 0.01, 99.99999, 100.0]
+        other_bounds = [1.00001, self.ant_value - 0.01, 11.00001, self.nest_value - 0.00001, self.nest_value + 0.0001, 99.99999, 100.0]
         total_colors = sum([pher_colors, other_colors], [])
         total_bounds = sum([pher_bounds, other_bounds], [])
+
+        
         
         # If the value is 0, the cell is white
         total_colors[0] = 'white'
-        
+
         # Create a cmap of all the colors
         cmap = mpl.colors.ListedColormap(total_colors)
-        norm = mpl.colors.BoundaryNorm(total_bounds, cmap.N)
+        norm = mpl.colors.BoundaryNorm(total_bounds, cmap.N, clip=True)
         img = plt.imshow(self.grid,interpolation='nearest', cmap=cmap, norm=norm)
         
         ax = plt.gca()
@@ -586,7 +624,6 @@ class Grid:
 
         # Gridlines based on minor ticks
         ax.grid(which='minor', color='black', linestyle='-', linewidth=0.3)
-        
         plt.xticks([], [])
         plt.yticks([], [])
         #plt.show()
@@ -599,10 +636,12 @@ class Grid:
 
         
 
-world = Grid([20, 0.7, 0.01, 2, 3])
+world = Grid([25, 0.15, 0.01, 8, 15])
 world.setNestLocation((14,3))
-world.setFoodSource((2,1), 20)
-world.setFoodSource((11,18), 20)
+world.setFoodSource((2,1), 6)
+world.setFoodSource((11,18), 6)
+world.setFoodSource((8,8), 6)
+
 
 # world.simulation()
 
