@@ -353,30 +353,36 @@ class Grid:
     '''
     
     def decide_step_search(self, ant):
-        coord = ant.getLocation()
-        origin = ant.getOrigin()
-        possible_steps = self.check_neighbours(coord)
+        possible_steps = self.possible_steps_list(coord, origin)
         
         pos_step = []
+        p_food_n = []
         for p in possible_steps:
-            
-            # nest location is not a possible step while searching
-            if p == self.nest_location and origin == self.nest_location:
-                possible_steps.remove(p)
-                
-            # if a food location is a possible step: return this as only possible step
             if p in self.food_location.keys():
                 return p
-            
-            # add all the possible steps to a list
+            if p in self.food_neighbours():
+                p_food_n.append(p)
             if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
                 pos_step.append(p)
-
         
-        if pos_step == []:
-            pos_step = possible_steps
+        if p_food_n != []:
+            return random.choice(p_food_n)
+        
+        elif pos_step != []:
+            return random.choice(pos_step)
 
-        return random.choice(pos_step)
+        elif origin != self.nest_location and self.next_location in self.check_neighbours(coord):
+            return self.next_location
+            
+        else:
+            return random.choice(self.check_neighbours(coord))
+
+    # Returns list of all neighbours of a food location, all neigh for every food loc are returned in one list
+    def food_neighbours(self):
+        food_neigh = []
+        for food_loc in self.food_location.keys():
+            food_neigh.append(self.check_neighbours(food_loc))
+        return sum(food_neigh, [])
         
     # adds onse work ant        
     def add_work_ant(self):
