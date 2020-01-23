@@ -244,7 +244,7 @@ class Grid:
             if self.grid_no_ants[y,x] >= 1:
                 self.grid[y,x] = 1.00
                 self.grid_no_ants[y, x] = 1.00    
-    '''
+    
     def pheromoneFade(self, coord):
         # The cell must already have pheromones
         x = int(coord[0])
@@ -254,30 +254,30 @@ class Grid:
         
         # get the values of the neighbour cells, if they are only pheromones, add them to surrounding pheromones
         for i in self.check_neighbours(coord):
-            if 0 <= self.get_kind(i) <= 1:
-                surroundPhero += self.get_kind(i) 
+            if 0 <= self.grid_no_ants[i[1], i[0]] <= 1:
+                surroundPhero += self.grid_no_ants[i[1], i[0]] 
     
         #reaction-diffusion-type simulation (Moore neighbours)
-        new_value = self.get_kind(coord) * (1 - 8*self.pheromone_fade) + self.pheromone_fade*surroundPhero
+        new_value = self.grid_no_ants[coord[1], coord[0]] * (1 - 8*self.pheromone_fade) + self.pheromone_fade*surroundPhero
 
         self.grid[y, x] = new_value
         self.grid_no_ants[y, x] = new_value    
         
         if self.get_kind(coord) <= 0:
             self.grid[y,x] = 0
-            self.grid[y,x] = 0
-    '''
-    def pheromoneFade(self, coord):
-        # The cell must already have pheromones
-        x = int(coord[0])
-        y = int(coord[1])
+            self.grid_no_ants[y, x] = 0
+    
+    # def pheromoneFade(self, coord):
+    #     # The cell must already have pheromones
+    #     x = int(coord[0])
+    #     y = int(coord[1])
 
-        self.grid[y, x] -= self.pheromone_fade
-        self.grid_no_ants[y, x] -= self.pheromone_fade   
+    #     self.grid[y, x] -= self.pheromone_fade
+    #     self.grid_no_ants[y, x] -= self.pheromone_fade   
         
-        if self.get_pheromone(coord) <= 0:
-            self.grid[y,x] = 0
-            self.grid[y,x] = 0
+    #     if self.get_pheromone(coord) <= 0:
+    #         self.grid[y,x] = 0
+    #         self.grid[y,x] = 0
 
 
     def retrieveFood(self, coord):
