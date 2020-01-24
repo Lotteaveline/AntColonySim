@@ -22,34 +22,45 @@ class Ant:
         self.location = create_location
         self.origin = create_location
         self.prev_steps = []
-        # Queue to keep track of the steps an ant needs to make
+        
+        # queue to keep track of the steps an ant needs to make
         self.nextSteps = queue.Queue()
         self.kind = kind
     
+    # returns type of ant, string with w is worker, s is searcher
     def getKind(self):
         return self.kind
-        
+    
+    # dit wordt nergens gebruikt ????? 
     def changeLocation(self, coord):
         self.location = coord
         
+    # returns location of an ant
     def getLocation(self):
         return self.location
 
+    # returns the previous step of an ant
     def getPrevLocations(self):
         return self.prev_steps
         
+    # changes the origin of an ant
     def changeOrigin(self, coord):
         self.prev_steps = []
         self.origin = coord
         
+    # returns the origin of an ant
     def getOrigin(self):
         return self.origin
         
+    # adds a next step to the queue of next steps
     def addNextStep(self, nextCoord):
         self.nextSteps.put(nextCoord)
     
     # nextSteps.get removes the first element from the queue and returns it.
-    # Therefore, when a step gets made it gets automatically removed from the queue
+    # Therefore, after every step it is = automatically removed from the queue
+    # ????
+    
+    # the location of the ant changes with a new step from the queue
     def setStep(self):
         step = self.nextSteps.get()
         self.prev_steps.append(self.location)
@@ -59,10 +70,21 @@ class Ant:
         
         self.location = step
         
+    # returns an empty queue of steps of an ant
     def noNextSteps(self):
         return self.nextSteps.empty()
 
-        
+    '''
+    This function finds the shortest path from a origin to the targetcoordinate.
+    It is used when a searcher ant finds a food location (origin) and has to 
+    return to the nest (target location). 
+    There are three possibilities: 
+    1 ant is on the same x or y coordinate, in which case it can walk back in a 
+    straight line. 
+    2 the x-distance is the same as the y-distance, in which case the ant can 
+    walk back in diagonal line.
+    3 the ant should walk back in a partly diagonal, partly straight line.
+    '''
     def findShortestPath(self, targetCoord, origin):
         x = origin[0]
         y = origin[1]
@@ -75,15 +97,12 @@ class Ant:
 
         dx = x_target - x
         dy = y_target - y
-
-        # Three possibilities: ant is on the same x or y coordinate, in which case it
-        # can walk back in a straight line.
-        # Or the x-distance is the same as the y-distance, in whcih case the ant can 
-        # walk back in diagonal line.
-        # Else, the ant should walk back in a partly diagonal, partly straight line.
+        
         l = []
-
+      
         while x != x_target or y != y_target:
+        
+            # posiibility 1
             if x == x_target:
                 y_new += dy / np.abs(dy)
                 self.nextSteps.put((x_new, y_new))
@@ -98,6 +117,7 @@ class Ant:
                 y = y_new
                 continue
 
+            # possibility 2
             if abs(dx) > abs(dy):
                 while y != y_target:
                     x_new += dx / np.abs(dx)
@@ -108,7 +128,8 @@ class Ant:
                 x_new += dx / np.abs(dx)
                 self.nextSteps.put((x_new, y_new))
                 x = x_new
-
+            
+            # possibility 3
             else:
                 while x != x_target:
                     x_new += dx / np.abs(dx)
@@ -162,14 +183,14 @@ class Grid:
         neighbours = []
 
         # List of relative position for all possible neighbours of a coordinate
-        adj = [(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, -1), (0,-1), (1,-1)]
+        adj = [(-1, 1),(0, 1),(1, 1),(-1, 0),(1, 0),(-1, -1),(0,-1),(1,-1)]
 
         # Create list of all possible nieghbours
         for n in adj:
             neighbours.append(tuple(np.subtract(coord, n)))
 
-        # In case of corners and edge pieces: find all neighbours that exist but are not valid for the specific 
-        # board
+        # In case of corners and edge pieces: find all neighbours that exist but 
+        # are not valid for the specific board
         neigh = []
         for n_tup in neighbours:
             if n_tup[0] < 0 or n_tup[1] < 0:
@@ -189,15 +210,17 @@ class Grid:
         self.grid[int(coord[1])][int(coord[0])] = new_value
         return self.grid
     
+    # return all the ants on the board 
     def get_ants(self):
         return self.ants
     
-    # return which value a cell has
+    # returns the value of a cell
     def get_kind(self, coord):
         x = int(coord[0])
         y = int(coord[1])
         return self.grid[y, x]
 
+    # returns the pheromone value of a cell
     def get_pheromone(self, coord):
         x = int(coord[0])
         y = int(coord[1])
@@ -216,18 +239,21 @@ class Grid:
             return "Invalid value"
         self.grid[y, x] = value
         
+    # set the coordinates and nest value as a dict
     def setNestLocation(self, coord):
         x = int(coord[0])
         y = int(coord[1])
         self.nest_location = (x,y)
         self.setKind(coord, self.nest_value)
 
+    # set the coordinates and foodsource value as dict
     def setFoodSource(self, coord, amtFood):
         x = int(coord[0])
         y = int(coord[1])
         self.setKind(coord, self.food_source_value)
         self.food_location[coord] = amtFood
 
+    # adds pheromone to a cell, when an ant leaves it
     def addPheromone(self, ant):
         coord = ant.getLocation()
         x = int(coord[0])
@@ -235,9 +261,11 @@ class Grid:
 
         strength = self.pheromone_strength
 
+        # if the ant is returning from food: add more pheromone than normal
         if ant.getOrigin() in self.food_location.keys():
             strength += 0.2
 
+        
         if coord not in self.food_location.keys() and coord != self.nest_location:
             self.grid[y, x] += strength
             self.grid_no_ants[y, x] += strength
@@ -252,7 +280,8 @@ class Grid:
         
         surroundPhero = 0
         
-        # get the values of the neighbour cells, if they are only pheromones, add them to surrounding pheromones
+        # get the values of the neighbour cells, if they are only pheromones, 
+        # add them to surrounding pheromones
         for i in self.check_neighbours(coord):
             if 0 <= self.grid_no_ants[i[1], i[0]] <= 1:
                 surroundPhero += self.grid_no_ants[i[1], i[0]] 
@@ -313,16 +342,17 @@ class Grid:
         
         
         for p in possible_steps:
-            # if a possible step contains pheromone, add it to the possible steps list
+            # add every possible step with pheromone to the possible step list
             if 0 < self.get_pheromone(p) <= 1:
                 pos_step.append(p)
                 pos_step_sum += self.get_pheromone(p)**2
                 
-            # if a food location is a possible step: return this as only possible step
+            # food location is the only possible step, when next to is
             if p in self.food_location.keys():
                 return p
             
-            # if a food location is a possible step: return this as only possible step
+            # when returning from food and ta possible step is the nest location
+            # return the nest location as only possible step
             if p == self.nest_location and origin in self.food_location.keys():
                 return p
             
@@ -330,8 +360,8 @@ class Grid:
         probability_distribution = []
         
         for pos in pos_step:
-            self.get_pheromone(pos)
-            probability_distribution.append(((self.get_pheromone(pos))**2/pos_step_sum))
+            prob_dis = (self.get_pheromone(pos))**2/pos_step_sum
+            probability_distribution.append(prob_dis)
             
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
@@ -406,7 +436,8 @@ class Grid:
         else:
             return random.choice(self.check_neighbours(coord))
 
-    # Returns list of all neighbours of a food location, all neigh for every food loc are returned in one list
+    # returns list of all neighbours of a food location, all neighbours for 
+    # every food location are returned in one list
     def food_neighbours(self):
         food_neigh = []
         for food_loc in self.food_location.keys():
@@ -467,11 +498,12 @@ class Grid:
                         
 
     # update board
-    # First, we update the pheromone values when they fade each step. This is done for both the grid
-    # with and the grid without ants.
-    # Then, we remove the old ants by setting the grid equal to the grid_no_ants
-    # Then we add the ants on their new locations, by first determining the location of an ant after it sets
-    # a step, and then setting this location of the grid to ant_value
+    # First, we update the pheromone values when they fade each step. This is 
+    # done for both the grid with and the grid without ants. Then, we remove the 
+    # old ants by setting the grid equal to the grid_no_ants. Then we add the 
+    # ants on their new locations, by first determining the location of an ant 
+    # after it sets a step, and then setting this location of the grid to 
+    # ant_value
     def renew_board(self):
         self.amt_steps += 1       
         self.grid = copy.deepcopy(self.grid_no_ants)
@@ -485,7 +517,7 @@ class Grid:
                 if cell_value == 0:
                     continue
       
-                # If cell is empty but contains a pheromone (hier gaat het goed met nest_value)
+                # If cell is empty but contains a pheromone
                 if 0 < cell_value <= 1:
                     self.pheromoneFade(curr_cell)
 
@@ -496,33 +528,33 @@ class Grid:
                     self.found_food_sources.remove((i,j))
 
         
-        # Determine the new location of each ant and set this new location on the board to ant_value
+        # determine new location of each ant, set this location as ant_value
         ants_copy = self.ants.copy()
         for ant in ants_copy:
             
-            # Add pheromone on the current location before the ants sets a step
+            # add pheromone on the current location before the ants sets a step
             ant_location = ant.getLocation()
             self.addPheromone(ant)
             
-            # If the ant has no next steps in its queue, decide which next step it should take
+            # if the queue of ant is empty, decide a new step
             if ant.noNextSteps():
                 
-                # Ant is on food source
+                # ant is on food source
                 if ant_location in self.food_location.keys():
                     ant.changeOrigin(ant_location)
                     self.total_cost -= self.food_reward
                     self.food_location[ant_location] =  self.food_location[ant_location] - 1
                     
-                    # Check if search ant
+                    # check if search ant
                     if ant.getKind() == 's':
                         ant.findShortestPath(self.nest_location, ant.getOrigin())
                     
-                    # Check if worker ant
+                    # check if worker ant
                     if ant.getKind() == 'w':
                         new_cell = self.decide_step_worker(ant)
                         ant.addNextStep(new_cell)
                 
-                # Ant is on nest
+                # ant is on nest
                 elif ant_location == self.nest_location:
                     if ant.getKind() == 's' and ant.getOrigin() == self.nest_location:
                         new_cell = self.decide_step_search(ant)
@@ -533,7 +565,7 @@ class Grid:
                         ant.addNextStep(new_cell)
                         
                   
-                # Ant is somewhere on the board that is not a nest or food source
+                # ant is somewhere on the board that is not a nest or food source
                 else:
                     # Check if search ant
                     if ant.getKind() == 's':
