@@ -236,7 +236,7 @@ class Grid:
         strength = self.pheromone_strength
 
         if ant.getOrigin() in self.food_location.keys():
-            strength += 0.2
+                strength += 0.43
 
         if coord not in self.food_location.keys() and coord != self.nest_location:
             self.grid[y, x] += strength
@@ -326,7 +326,6 @@ class Grid:
             if p == self.nest_location and origin in self.food_location.keys():
                 return p
             
-                
         probability_distribution = []
         
         for pos in pos_step:
@@ -650,7 +649,7 @@ class Grid:
 
         
 
-world = Grid([25, 0.15, 0.01, 8, 15])
+world = Grid([25, 0.1, 0.005, 8, 15])
 world.setNestLocation((14,3))
 world.setFoodSource((2,1), 6)
 world.setFoodSource((11,18), 6)
