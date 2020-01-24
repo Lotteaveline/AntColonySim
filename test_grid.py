@@ -14,6 +14,8 @@ import queue
 #from pylab import *
 from drawnow import drawnow, figure
 
+# even een testjes of het doorkomt
+
 matplotlib.rc('animation', html='html5')
 
 class Ant:
