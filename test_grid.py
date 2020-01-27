@@ -511,7 +511,7 @@ class Grid:
             if found_food_source not in self.found_food_sources:
                 self.found_food_sources.append(found_food_source)
 
-
+        # Mag dit weg???
         #if found_food_source not in self.found_food_sources:
         #    self.total_found_food_value += self.food_location[found_food_source]
 
@@ -639,14 +639,14 @@ class Grid:
             while self.n_search != 0:
                 self.release_ant('s')
                 self.renew_board()
-                drawnow(self.showGrid)
-                plt.pause(0.0001)
+                # drawnow(self.showGrid)
+                # plt.pause(0.0001)
 
             # if no search ant has returned, just keep updating the board
             while self.return_1 == False:
                 self.renew_board()
-                drawnow(self.showGrid)
-                plt.pause(0.0001)
+                # drawnow(self.showGrid)
+                # plt.pause(0.0001)
 
             # as long as the food location is not empty and ???
             while self.food_location != {} and len(self.ants) != 0:
@@ -658,13 +658,13 @@ class Grid:
                         self.release_ant('w')
 
                     self.renew_board()
-                    drawnow(self.showGrid)
-                    plt.pause(0.0001)
+                    # drawnow(self.showGrid)
+                    # plt.pause(0.0001)
 
                 # kep on renewing the board
                 self.renew_board()
-                drawnow(self.showGrid)
-                plt.pause(0.0001)
+                # drawnow(self.showGrid)
+                # plt.pause(0.0001)
 
             break
         print("Total cost: ", self.total_cost)
@@ -672,8 +672,8 @@ class Grid:
 
         return self.total_cost, self.amt_steps
 
-        self.showGrid()
-        plt.show()
+        # self.showGrid()
+        # plt.show()
 
 
     def showGrid(self):
@@ -712,11 +712,6 @@ class Grid:
         ax.grid(which='minor', color='black', linestyle='-', linewidth=0.3)
         plt.xticks([], [])
         plt.yticks([], [])
-        #plt.show()
-
-#     def visualize_grid_plot(self, i):
-#         self.showGrid()
-#         imshow()
 
 
 '''
@@ -735,7 +730,7 @@ def make_data(grid, strength, fade):
     for i in range(10):
 
         # make the environment for the simulation
-        world = Grid([[grid, strength, fade, search, work]])
+        world = Grid([grid, strength, fade, search, work])
         world.setNestLocation((14,3))
         world.setFoodSource((2,1), 6)
         world.setFoodSource((11,18), 6)
@@ -761,6 +756,7 @@ def make_data(grid, strength, fade):
 
     return data_cost, data_board
 
+print(make_data(25, 0.1, 0.005))
 
 
 '''
