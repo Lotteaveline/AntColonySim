@@ -802,11 +802,9 @@ def make_data(grid, strength, fade):
 
     return data_cost, data_board
 
-<<<<<<< HEAD
+
 #print(make_data(25, 0.1, 0.005))
-=======
-# print(make_data(25, 0.1, 0.005))
->>>>>>> 6ed2437be62976de10c67a204a75ff52b965a047
+
 
 
 '''
@@ -834,7 +832,6 @@ def ttest_pvalue(pop1, pop2):
     return ttest[0], ttest[1]
 
 
-<<<<<<< HEAD
 print("Welcome to the Antcolony sim.")
 print("To run the simulation, collect data and show graphs, enter: run simulation")
 print("To see a visualisation of one run of the simulation, enter: show visual ")
@@ -863,9 +860,6 @@ while not correct_input:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
 
 
-
-=======
-
 a = [15.812000000000086, 24.11600000000023, 32.53600000000034, 41.981000000000385, 40.81100000000044, 40.42100000000045, 46.508000000000436, 49.846000000000394, 47.188000000000486, 50.36700000000042]
 
 b =[10.54400000000005, 15.386000000000056, 15.502000000000088, 20.938000000000105, 22.395000000000167, 22.613000000000135, 23.635000000000126, 24.231000000000144, 24.222000000000165, 23.390000000000146]
@@ -875,17 +869,3 @@ plot_distributions(a, b, 'with 1 food source', 'with 2 food source')
 
 print(ttest_pvalue(a,b))
 
-#
-# world = Grid([25, 0.1, 0.005, 8, 15])
-# print("uuuuh")
-# world.setNestLocation((14,3))
-# world.setFoodSource((2,1), 6)
-# world.setFoodSource((11,18), 6)
-# world.setFoodSource((8,8), 6)
-#
-#
-#
-#
-# world.showGrid()
-# world.simulation()
->>>>>>> 6ed2437be62976de10c67a204a75ff52b965a047
