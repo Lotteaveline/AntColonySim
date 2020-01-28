@@ -15,9 +15,6 @@ from scipy import stats
 import seaborn as sns
 from drawnow import drawnow, figure
 
-# even een testjes of het doorkomt
-
-matplotlib.rc('animation', html='html5')
 
 class Ant:
 
@@ -30,13 +27,9 @@ class Ant:
         self.nextSteps = queue.Queue()
         self.kind = kind
 
-    # returns type of ant, string with w is worker, s is searcher
+    # returns string of type of ant, string with w is worker, s is searcher
     def getKind(self):
         return self.kind
-
-    # dit wordt nergens gebruikt ?????
-    def changeLocation(self, coord):
-        self.location = coord
 
     # returns location of an ant
     def getLocation(self):
@@ -58,10 +51,6 @@ class Ant:
     # adds a next step to the queue of next steps
     def addNextStep(self, nextCoord):
         self.nextSteps.put(nextCoord)
-
-    # nextSteps.get removes the first element from the queue and returns it.
-    # Therefore, after every step it is = automatically removed from the queue
-    # ????
 
     # the location of the ant changes with a new step from the queue
     def setStep(self):
@@ -105,7 +94,7 @@ class Ant:
 
         while x != x_target or y != y_target:
 
-            # posiibility 1
+            # posibility 1
             if x == x_target:
                 y_new += dy / np.abs(dy)
                 self.nextSteps.put((x_new, y_new))
@@ -150,11 +139,10 @@ class Ant:
 
 class Grid:
 
-    # para([Grid size, pheromone strength, pheromone fade, n_search, n_work])
+    # para = [Grid size, pheromone strength, pheromone fade, n_search, n_work]
     def __init__(self, para):
         # Create board of specifc board size
         self.grid = np.zeros((para[0], para[0]), dtype=float)
-        print(para)
         self.grid_no_ants = self.grid
         self.grid_size = para[0]
         self.nest_value = 25
@@ -164,7 +152,6 @@ class Grid:
         self.pheromone_fade = para[2]
         self.n_search = para[3]
         self.n_work = para[4]
-        print(self.n_search)
         self.ants = []
 
         self.nest_location = None
@@ -238,7 +225,10 @@ class Grid:
     def setKind(self, coord, value):
         x = int(coord[0])
         y = int(coord[1])
-        if value is not self.ant_value and value is not self.nest_value and value < self.food_source_value:
+        ant = self.ant_value
+        nest = sel.nest_value
+        food = self.food_source_value
+        if value is not ant and value is not nest and value < food:
             return "Invalid value"
         self.grid[y, x] = value
 
@@ -263,6 +253,7 @@ class Grid:
         y = int(coord[1])
 
         strength = self.pheromone_strength
+        nest_loc = self.nest_location
 
         # if the ant is returning from food: add more pheromone than normal
         if ant.getOrigin() in self.food_location.keys():
@@ -270,7 +261,7 @@ class Grid:
 
         # if the coordinate is not the food nor nest location add pheromone
         # with a maximum of 1.00
-        if coord not in self.food_location.keys() and coord != self.nest_location:
+        if coord not in self.food_location.keys() and coord != nest_loc:
             self.grid[y, x] += strength
             self.grid_no_ants[y, x] += strength
             if self.grid_no_ants[y,x] >= 1:
@@ -296,7 +287,9 @@ class Grid:
                 surroundPhero += self.grid_no_ants[i[1], i[0]]
 
         #reaction-diffusion-type simulation (Moore neighbours)
-        new_value = self.grid_no_ants[coord[1], coord[0]] * (1 - 8*self.pheromone_fade) + self.pheromone_fade*surroundPhero
+        fading = self.pheromone_fade
+        phero_loc = self.grid_no_ants[coord[1], coord[0]]
+        new_value = phero_loc * (1 - 8*fading) + fading*surroundPhero
 
         self.grid[y, x] = new_value
         self.grid_no_ants[y, x] = new_value
@@ -304,18 +297,6 @@ class Grid:
         if self.get_kind(coord) <= 0:
             self.grid[y,x] = 0
             self.grid_no_ants[y, x] = 0
-
-    # def pheromoneFade(self, coord):
-    #     # The cell must already have pheromones
-    #     x = int(coord[0])
-    #     y = int(coord[1])
-
-    #     self.grid[y, x] -= self.pheromone_fade
-    #     self.grid_no_ants[y, x] -= self.pheromone_fade
-
-    #     if self.get_pheromone(coord) <= 0:
-    #         self.grid[y,x] = 0
-    #         self.grid[y,x] = 0
 
     # if an ant retreives food, the total food value goes down by 1
     def retrieveFood(self, coord):
@@ -337,7 +318,6 @@ class Grid:
         best_neigh = []
         for n in pn:
             distance = self.origin_distance(n, origin)
-            #if distance > dist:
             if n not in ant.getPrevLocations():
                 best_neigh.append(n)
 
@@ -357,6 +337,7 @@ class Grid:
 
         # go over all the possible steps an ant can make
         for p in possible_steps:
+
             # add every possible step with pheromone to the possible step list
             if 0 < self.get_pheromone(p) <= 1:
                 pos_step.append(p)
@@ -393,33 +374,10 @@ class Grid:
 
         return pos_step[index]
 
-    '''
-    def decide_step_worker(self, ant):
-        coord = ant.getLocation()
-        origin = ant.getOrigin()
-        largest_value = 0
-        step_to_take = 0
-        possible_steps = self.possible_steps_list(ant)
-
-        for step in possible_steps:
-            x = int(step[0])
-            y = int(step[1])
-            value = self.grid_no_ants[y, x]
-            if value > largest_value:
-                largest_value = value
-                step_to_take = step
-
-        if step_to_take == 0:
-            step_to_take = random.choice(possible_steps)
-
-        return step_to_take
-    '''
 
     '''
     This function returns the step a search ant will make. It
     '''
-
-
     def decide_step_search(self, ant):
         coord = ant.getLocation()
         origin = ant.getOrigin()
@@ -446,6 +404,7 @@ class Grid:
             # ???
             if p in self.food_neighbours():
                 p_moore.append(p)
+
             # ?? kunnen we dit op een manier binnen de 80 krijgen??
             if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
                 pos_step.append(p)
@@ -527,9 +486,6 @@ class Grid:
         elif type_ant == 'w':
             self.n_work -= 1
             self.add_work_ant()
-
-
-
 
     '''
     update board
@@ -631,7 +587,13 @@ class Grid:
 
 
 
-    # this is the simulation function where the complete sotry of the
+    '''
+    The following function finalizes the complete visualisation of the
+    simulation. It renews the board for every time step and it then draws the
+    new board. It also decides when search and work ants will be released on the
+    board. It returns the total cost it took for the ants to empty the complete
+    food source and it returns the amount of board renewals.
+    '''
     def visualSimulation(self):
         print(self.n_search)
         cnt = 0
@@ -686,6 +648,13 @@ class Grid:
         self.showGrid()
         plt.show()
 
+    '''
+    The following function finalizes the complete simulation. It renews the
+    board for every time step. It also decides when search and work ants will be
+    released on the board. It returns the total cost it took for the ants to
+    empty the complete food source and it retunrs the amount of board renewals.
+    This function is used for the collection of data and is fast for testing.
+    '''
     def simulation(self):
         print(self.n_search)
         cnt = 0
@@ -732,7 +701,10 @@ class Grid:
         self.showGrid()
         plt.show()
 
-
+    '''
+    This function gives the coloring of the grid. It also plots the complete
+    grid with the corresponding colors for every unit of the simulation.    
+    '''
     def showGrid(self):
         # Amount of different colors for pheromones
         pheromone_amount = 80
