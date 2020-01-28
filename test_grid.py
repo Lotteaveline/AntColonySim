@@ -226,7 +226,7 @@ class Grid:
         x = int(coord[0])
         y = int(coord[1])
         ant = self.ant_value
-        nest = sel.nest_value
+        nest = self.nest_value
         food = self.food_source_value
         if value is not ant and value is not nest and value < food:
             return "Invalid value"
@@ -402,7 +402,7 @@ class Grid:
                 p_food_n.append(p)
 
             # ???
-            if p in self.food_neighbours():
+            if p in self.food_moore_neigh():
                 p_moore.append(p)
 
             # ?? kunnen we dit op een manier binnen de 80 krijgen??
@@ -517,7 +517,9 @@ class Grid:
                     self.grid_no_ants[j,i] = 0
                     self.grid[j,i] = 0
                     self.food_location.pop((i,j))
-                    self.found_food_sources.remove((i,j))
+
+                    if (i,j) in self.found_food_sources:
+                        self.found_food_sources.remove((i,j))
 
 
         # determine new location of each ant, set this location as ant_value
@@ -610,13 +612,11 @@ class Grid:
                 self.renew_board()
                 drawnow(self.showGrid)
                 plt.pause(0.0001)
-            print("jo")
+
             # as long as the food location is not empty and ???
             while self.food_location != {}:
-                print("iets anders")
                 # if not all the work ants have been released, release them
                 while self.n_work != 0:
-                    print(self.n_work)
                     cnt += 1
 
                     if len(self.found_food_sources) == 0:
@@ -629,15 +629,13 @@ class Grid:
                     drawnow(self.showGrid)
                     plt.pause(0.0001)
 
-                if len(self.ants) != 0:
-                    print("ok")
-                    break
+                #if len(self.ants) != 0:
+                 #   break
 
 
                 
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
-                    print('hmmm')
                     break
 
                 iterations_counter += 1
@@ -666,6 +664,8 @@ class Grid:
     This function is used for the collection of data and is fast for testing.
     '''
     def simulation(self):
+        print("Search ants: ", self.n_search)
+        print("Work ants:" , self.n_work)
         cnt = 0
         iterations_counter = 0
         while True:
@@ -689,8 +689,8 @@ class Grid:
 
                     self.renew_board()
 
-                if len(self.ants) != 0:
-                    break
+                #if len(self.ants) != 0:
+                #    break
                 
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
@@ -802,7 +802,7 @@ def make_data(grid, strength, fade):
 
     return data_cost, data_board
 
-print(make_data(25, 0.1, 0.005))
+#print(make_data(25, 0.1, 0.005))
 
 
 '''
@@ -829,22 +829,32 @@ def ttest_pvalue(pop1, pop2):
     return ttest[0], ttest[1]
 
 
-world = Grid([25, 0.1, 0.005, 8, 15])
-world.setNestLocation((14,3))
-world.setFoodSource((2,1), 6)
-world.setFoodSource((11,18), 6)
-world.setFoodSource((8,8), 6)
+print("Welcome to the Antcolony sim.")
+print("To run the simulation, collect data and show graphs, enter: run simulation")
+print("To see a visualisation of one run of the simulation, enter: show visual ")
+
+correct_input = False
 
 
-# world.simulation()
+while not correct_input:
+    option = input()
 
-world.showGrid()
-world.simulation()
+    if option == 'show visual':
+        world = Grid([25, 0.1, 0.005, 2, 8])
+        world.setNestLocation((14,3))
+        world.setFoodSource((2,1), 6)
+        world.setFoodSource((11,18), 6)
+        world.visualSimulation()
 
-#for i in range(50):
-#     world.renew_board()
-#     #print(world.grid)
-#     world.showGrid()
+        correct_input = True
 
-#for k in range(50):
-#    drawnow(world)
+    elif option == 'run simulation':
+        make_data(25, 0.1, 0.005)
+
+        correct_input = True
+        
+    else:
+        print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
+
+
+
