@@ -793,7 +793,7 @@ def make_data(grid, strength, fade, food_sources):
 
             cost, board = world.simulation()
             if cost == 0 and board == 0:
-                cost = 250
+                cost = 200
                 board = 500
             total_cost += cost
             total_board += board
