@@ -226,7 +226,7 @@ class Grid:
         x = int(coord[0])
         y = int(coord[1])
         ant = self.ant_value
-        nest = sel.nest_value
+        nest = self.nest_value
         food = self.food_source_value
         if value is not ant and value is not nest and value < food:
             return "Invalid value"
@@ -595,7 +595,6 @@ class Grid:
     food source and it returns the amount of board renewals.
     '''
     def visualSimulation(self):
-        print(self.n_search)
         cnt = 0
         while True:
             # while not all the search ants have been released, release them
@@ -656,7 +655,6 @@ class Grid:
     This function is used for the collection of data and is fast for testing.
     '''
     def simulation(self):
-        print(self.n_search)
         cnt = 0
         while True:
             # while not all the search ants have been released, release them
@@ -679,8 +677,6 @@ class Grid:
 
                     self.renew_board()
 
-
-                print(self.found_food_sources)
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
                     break
@@ -703,7 +699,7 @@ class Grid:
 
     '''
     This function gives the coloring of the grid. It also plots the complete
-    grid with the corresponding colors for every unit of the simulation.    
+    grid with the corresponding colors for every unit of the simulation.
     '''
     def showGrid(self):
         # Amount of different colors for pheromones
@@ -787,21 +783,22 @@ def make_data(grid, strength, fade):
 
     return data_cost, data_board
 
-print(make_data(25, 0.1, 0.005))
+# print(make_data(25, 0.1, 0.005))
 
 
 '''
 This function will plot the standard deviations of 2 populations. The
 input is two arrays containing tuples.
 '''
-def plot_distributions(pop1, pop2):
+def plot_distributions(pop1):#, pop2):
     # plot the histograms and distibution of the data
     sns.distplot(pop1)
-    sns.distplot(pop2)
+    #sns.distplot(pop2)
 
     # add labels
     plt.title('Distribution of cost per worker:searcher ants')
     plt.xlabel('Ratio workers:searchers')
+    plt.legend(labels=['test_label1'])#,'test_label2'])
     plt.ylabel('Cost')
     plt.show()
 
@@ -814,23 +811,24 @@ def ttest_pvalue(pop1, pop2):
     return ttest[0], ttest[1]
 
 
-world = Grid([25, 0.1, 0.005, 8, 15])
-print("uuuuh")
-world.setNestLocation((14,3))
-world.setFoodSource((2,1), 6)
-world.setFoodSource((11,18), 6)
-world.setFoodSource((8,8), 6)
+
+a = [15.812000000000086, 24.11600000000023, 32.53600000000034, 41.981000000000385, 40.81100000000044, 40.42100000000045, 46.508000000000436, 49.846000000000394, 47.188000000000486, 50.36700000000042]
 
 
+plot_distributions(a)
+
+
+
+#
+# world = Grid([25, 0.1, 0.005, 8, 15])
+# print("uuuuh")
+# world.setNestLocation((14,3))
+# world.setFoodSource((2,1), 6)
+# world.setFoodSource((11,18), 6)
+# world.setFoodSource((8,8), 6)
+#
+#
+#
+#
+# world.showGrid()
 # world.simulation()
-
-world.showGrid()
-world.simulation()
-
-#for i in range(50):
-#     world.renew_board()
-#     #print(world.grid)
-#     world.showGrid()
-
-#for k in range(50):
-#    drawnow(world)
