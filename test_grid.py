@@ -774,7 +774,7 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        amount_iterations = 1
+        amount_iterations = 5
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
