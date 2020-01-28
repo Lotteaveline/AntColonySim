@@ -691,7 +691,7 @@ class Grid:
 
                 #if len(self.ants) != 0:
                 #    break
-                
+
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
                     break
@@ -756,29 +756,33 @@ class Grid:
 
 '''
 This function collects the data for the different ratios of ants. It runs the
-simulation 100 times for every ratio from 10:0 to 0:10 workers:searchers. '''
-
-def make_data(grid, strength, fade):
+simulation 100 times for every ratio from 10:0 to 0:10 workers:searchers.
+'''
+def make_data(grid, strength, fade, food_sources):
     # initialize the data list and start values of worker and search ants
     data_cost = []
     data_board = []
 
     search = 1
-    work = 10
+    work = 9
 
     # run the test for 10 different ratios
-    for i in range(10):
+    for i in range(9):
 
         total_cost = 0
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        for i in range(100):
+        amount_iterations = 1
+        for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
+
+            for food_source in food_sources:
+                world.setFoodSource(food_source, 6)
+
             world.setNestLocation((14,3))
-            world.setFoodSource((2,1), 6)
-            world.setFoodSource((11,18), 6)
+
             #world.setFoodSource((8,8), 6)
 
 
@@ -787,14 +791,15 @@ def make_data(grid, strength, fade):
 
             cost, board = world.simulation()
             if cost == 0 and board == 0:
-                continue
+                cost = 250
+                board = 500
             total_cost += cost
             total_board += board
 
 
         # add the average to a the data list
-        data_cost.append(total_cost/100)
-        data_board.append(total_board/100)
+        data_cost.append(total_cost/amount_iterations)
+        data_board.append(total_board/amount_iterations)
 
         # change the ratio of work:search ants for next iteration
         search += 1
@@ -803,7 +808,6 @@ def make_data(grid, strength, fade):
     return data_cost, data_board
 
 
-#print(make_data(25, 0.1, 0.005))
 
 
 
@@ -811,7 +815,7 @@ def make_data(grid, strength, fade):
 This function will plot the standard deviations of 2 populations. The
 input is two arrays containing tuples.
 '''
-def plot_distributions(pop1, pop2, term1, term2):
+def plot_distributions(pop1, pop2, term1, term2, titel):
     # plot the histograms and distibution of the data
     sns.distplot(pop1)
     sns.distplot(pop2)
@@ -821,6 +825,7 @@ def plot_distributions(pop1, pop2, term1, term2):
     plt.xlabel('Ratio workers:searchers (%)')
     plt.legend(labels=['Population ' + term1,'Population ' + term2])
     plt.ylabel('Cost')
+    plt.savefig(titel)
     plt.show()
 
 
@@ -829,6 +834,8 @@ This function returns the t-test value and the p-value between two populations.
 '''
 def ttest_pvalue(pop1, pop2):
     ttest = stats.ttest_ind(pop1, pop2)
+    print("This is the t-value:" + ttest[0])
+    print("This is the p-value:" + ttest[1])
     return ttest[0], ttest[1]
 
 
@@ -852,20 +859,24 @@ while not correct_input:
         correct_input = True
 
     elif option == 'run simulation':
-        make_data(25, 0.1, 0.005)
-
+        param = []
+        food_sources = [(11,18)]
+        food_sources2 = [(11, 18), (2, 1)]
+        cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
+        plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
+        plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
         correct_input = True
-        
+
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
 
 
-a = [15.812000000000086, 24.11600000000023, 32.53600000000034, 41.981000000000385, 40.81100000000044, 40.42100000000045, 46.508000000000436, 49.846000000000394, 47.188000000000486, 50.36700000000042]
-
-b =[10.54400000000005, 15.386000000000056, 15.502000000000088, 20.938000000000105, 22.395000000000167, 22.613000000000135, 23.635000000000126, 24.231000000000144, 24.222000000000165, 23.390000000000146]
 
 plot_distributions(a, b, 'with 1 food source', 'with 2 food source')
 
 
 print(ttest_pvalue(a,b))
-
