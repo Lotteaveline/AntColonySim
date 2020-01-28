@@ -354,17 +354,16 @@ class Grid:
 
         probability_distribution = []
 
-        # ????
+        # generate probability distribution for every possible step which contains pheromones 
         for pos in pos_step:
             prob_dis = (self.get_pheromone(pos))**2/pos_step_sum
             probability_distribution.append(prob_dis)
 
+        # if there are no steps that are further away from the origin, take a random step to a neighbour 
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
 
-        if possible_steps == []:
-            return random.choice(self.check_neighbours(coord))
-
+        # if there are no steps that contain pheromones, create a probabiltiy distribution over all steps 
         if pos_step == []:
             pos_step = possible_steps
             prob_value = 1/len(possible_steps)
@@ -397,11 +396,12 @@ class Grid:
             if p in self.food_location.keys():
                 return p
 
-            # adds the location next to food to the possible food steps ??
+            # adds the location next to food to the possible food steps
             if p in self.food_neighbours():
                 p_food_n.append(p)
 
-            # ???
+
+            # adds neighbours of the location next to food to the possible food steps
             if p in self.food_moore_neigh():
                 p_moore.append(p)
 
@@ -409,19 +409,23 @@ class Grid:
             if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
                 pos_step.append(p)
 
-        # if the possible steps to food is empty make a random choice
+        # if there are possible steps which are a food neighbour pick one at random 
         if p_food_n != []:
             return random.choice(p_food_n)
 
+        # if there are possible steps which are a neighbour of a food neighbour pick one at random
         elif p_moore != []:
             return random.choice(p_moore)
 
+        # if there are possible steps which dont have pheromones pick one at random 
         elif pos_step != []:
             return random.choice(pos_step)
 
+        # ???
         elif origin != self.nest_location and self.next_location in self.check_neighbours(coord):
             return self.next_location
 
+        # if all options fail just pick a random step
         else:
             return random.choice(self.check_neighbours(coord))
 
@@ -433,7 +437,8 @@ class Grid:
             food_neigh.append(self.check_neighbours(food_loc))
         return sum(food_neigh, [])
 
-    # ???
+    # returns list of all neighbours of all neighbours of a food location, all neighbours for
+    # every food location are returned in one list
     def food_moore_neigh(self):
         moore = []
         for n in self.food_neighbours():
@@ -469,10 +474,6 @@ class Grid:
 
             if found_food_source not in self.found_food_sources:
                 self.found_food_sources.append(found_food_source)
-
-        # Mag dit weg???
-        #if found_food_source not in self.found_food_sources:
-        #    self.total_found_food_value += self.food_location[found_food_source]
 
         self.ants.remove(ant)
 
