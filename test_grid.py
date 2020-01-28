@@ -14,6 +14,7 @@ import queue
 from scipy import stats
 import seaborn as sns
 from drawnow import drawnow, figure
+import time
 
 
 class Ant:
@@ -354,16 +355,16 @@ class Grid:
 
         probability_distribution = []
 
-        # generate probability distribution for every possible step which contains pheromones 
+        # generate probability distribution for every possible step which contains pheromones
         for pos in pos_step:
             prob_dis = (self.get_pheromone(pos))**2/pos_step_sum
             probability_distribution.append(prob_dis)
 
-        # if there are no steps that are further away from the origin, take a random step to a neighbour 
+        # if there are no steps that are further away from the origin, take a random step to a neighbour
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
 
-        # if there are no steps that contain pheromones, create a probabiltiy distribution over all steps 
+        # if there are no steps that contain pheromones, create a probabiltiy distribution over all steps
         if pos_step == []:
             pos_step = possible_steps
             prob_value = 1/len(possible_steps)
@@ -409,7 +410,7 @@ class Grid:
             if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
                 pos_step.append(p)
 
-        # if there are possible steps which are a food neighbour pick one at random 
+        # if there are possible steps which are a food neighbour pick one at random
         if p_food_n != []:
             return random.choice(p_food_n)
 
@@ -417,7 +418,7 @@ class Grid:
         elif p_moore != []:
             return random.choice(p_moore)
 
-        # if there are possible steps which dont have pheromones pick one at random 
+        # if there are possible steps which dont have pheromones pick one at random
         elif pos_step != []:
             return random.choice(pos_step)
 
@@ -774,7 +775,7 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        amount_iterations = 5
+        amount_iterations = 100
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -858,7 +859,7 @@ while not correct_input:
         world.visualSimulation()
 
         correct_input = True
-
+    start = time.time()
     elif option == 'run simulation':
         param = []
         food_sources = [(11,18)]
@@ -867,17 +868,29 @@ while not correct_input:
         cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
         cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
         cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        end = time.time()
         plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
         plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
         plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
         correct_input = True
+        print(start)
+        print(end)
+        food_t, food_p = ttest_pvalue(cost, cost1)
+        strength_t, strength_p = ttest_pvalue(cost, cost2)
+        fade_t, fade_p = ttest_pvalue(cost, cost3)
 
+        print("The t-value for food:" + food_t + "The p-value for food" + food_p)
+        print("The t-value for strength:" + food_t + "The p-value for strength" + food_p)
+        print("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
+
+        print(cost)
+        print(cost1)
+        print(cost2)
+        print(cost3)
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
 
 
-
-plot_distributions(a, b, 'with 1 food source', 'with 2 food source')
 
 
 print(ttest_pvalue(a,b))
