@@ -775,7 +775,7 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        amount_iterations = 100
+        amount_iterations = 50
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -859,22 +859,27 @@ while not correct_input:
         world.visualSimulation()
 
         correct_input = True
-    start = time.time()
+
     elif option == 'run simulation':
         param = []
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
-        cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        #cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        #cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        #cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
         cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        end = time.time()
+
+        
+        # print(cost1)
+        # print(cost2)
+        print(cost3)
+        print(boards3)
+
         plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
         plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
         plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
         correct_input = True
-        print(start)
-        print(end)
+
         food_t, food_p = ttest_pvalue(cost, cost1)
         strength_t, strength_p = ttest_pvalue(cost, cost2)
         fade_t, fade_p = ttest_pvalue(cost, cost3)
@@ -883,10 +888,7 @@ while not correct_input:
         print("The t-value for strength:" + food_t + "The p-value for strength" + food_p)
         print("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
 
-        print(cost)
-        print(cost1)
-        print(cost2)
-        print(cost3)
+        
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
 
