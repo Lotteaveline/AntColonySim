@@ -596,6 +596,7 @@ class Grid:
     '''
     def visualSimulation(self):
         cnt = 0
+        iterations_counter = 0
         while True:
             # while not all the search ants have been released, release them
             while self.n_search != 0:
@@ -609,30 +610,40 @@ class Grid:
                 self.renew_board()
                 drawnow(self.showGrid)
                 plt.pause(0.0001)
-
+            print("jo")
             # as long as the food location is not empty and ???
-            while self.food_location != {} and len(self.ants) != 0:
-
+            while self.food_location != {}:
+                print("iets anders")
                 # if not all the work ants have been released, release them
                 while self.n_work != 0:
+                    print(self.n_work)
                     cnt += 1
-                    if cnt % 5 == 0 and len(self.found_food_sources) != 0:
+
+                    if len(self.found_food_sources) == 0:
+                        break
+
+                    if cnt % 5 == 0:
                         self.release_ant('w')
 
                     self.renew_board()
                     drawnow(self.showGrid)
                     plt.pause(0.0001)
 
-
-                print(self.found_food_sources)
-                # kep on renewing the board
-                if len(self.found_food_sources) == 0:
+                if len(self.ants) != 0:
+                    print("ok")
                     break
 
-                cnt += 1
-                if cnt == 400:
+
+
+                # kep on renewing the board
+                if len(self.found_food_sources) == 0:
+                    print('hmmm')
+                    break
+
+                iterations_counter += 1
+                if iterations_counter == 400:
+                    print("Too many iterations")
                     return 0, 0
-                print(cnt)
 
                 self.renew_board()
                 drawnow(self.showGrid)
@@ -656,6 +667,7 @@ class Grid:
     '''
     def simulation(self):
         cnt = 0
+        iterations_counter = 0
         while True:
             # while not all the search ants have been released, release them
             while self.n_search != 0:
@@ -667,24 +679,27 @@ class Grid:
                 self.renew_board()
 
             # as long as the food location is not empty and ???
-            while self.food_location != {} and len(self.ants) != 0:
+            while self.food_location != {}:
 
                 # if not all the work ants have been released, release them
                 while self.n_work != 0:
                     cnt += 1
-                    if cnt % 5 == 0 and len(self.found_food_sources) != 0:
+                    if cnt % 5 == 0:
                         self.release_ant('w')
 
                     self.renew_board()
+
+                if len(self.ants) != 0:
+                    break
 
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
                     break
 
-                cnt += 1
-                if cnt == 400:
+                iterations_counter += 1
+                if iterations_counter == 400:
+                    print("Too many iterations")
                     return 0, 0
-                print(cnt)
 
                 self.renew_board()
 
@@ -748,7 +763,7 @@ def make_data(grid, strength, fade):
     data_cost = []
     data_board = []
 
-    search = 8
+    search = 1
     work = 10
 
     # run the test for 10 different ratios
@@ -764,7 +779,11 @@ def make_data(grid, strength, fade):
             world.setNestLocation((14,3))
             world.setFoodSource((2,1), 6)
             world.setFoodSource((11,18), 6)
-            world.setFoodSource((8,8), 6)
+            #world.setFoodSource((8,8), 6)
+
+
+            print(i)
+            print("------------------------")
 
             cost, board = world.simulation()
             if cost == 0 and board == 0:
