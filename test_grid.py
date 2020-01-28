@@ -154,7 +154,7 @@ class Grid:
     def __init__(self, para):
         # Create board of specifc board size
         self.grid = np.zeros((para[0], para[0]), dtype=float)
-
+        print(para)
         self.grid_no_ants = self.grid
         self.grid_size = para[0]
         self.nest_value = 25
@@ -164,7 +164,7 @@ class Grid:
         self.pheromone_fade = para[2]
         self.n_search = para[3]
         self.n_work = para[4]
-
+        print(self.n_search)
         self.ants = []
 
         self.nest_location = None
@@ -632,21 +632,22 @@ class Grid:
 
 
     # this is the simulation function where the complete sotry of the
-    def simulation(self):
+    def visualSimulation(self):
+        print(self.n_search)
         cnt = 0
         while True:
             # while not all the search ants have been released, release them
             while self.n_search != 0:
                 self.release_ant('s')
                 self.renew_board()
-                # drawnow(self.showGrid)
-                # plt.pause(0.0001)
+                drawnow(self.showGrid)
+                plt.pause(0.0001)
 
             # if no search ant has returned, just keep updating the board
             while self.return_1 == False:
                 self.renew_board()
-                # drawnow(self.showGrid)
-                # plt.pause(0.0001)
+                drawnow(self.showGrid)
+                plt.pause(0.0001)
 
             # as long as the food location is not empty and ???
             while self.food_location != {} and len(self.ants) != 0:
@@ -658,13 +659,23 @@ class Grid:
                         self.release_ant('w')
 
                     self.renew_board()
-                    # drawnow(self.showGrid)
-                    # plt.pause(0.0001)
+                    drawnow(self.showGrid)
+                    plt.pause(0.0001)
 
+
+                print(self.found_food_sources)
                 # kep on renewing the board
+                if len(self.found_food_sources) == 0:
+                    break
+
+                cnt += 1
+                if cnt == 400:
+                    return 0, 0
+                print(cnt)
+
                 self.renew_board()
-                # drawnow(self.showGrid)
-                # plt.pause(0.0001)
+                drawnow(self.showGrid)
+                plt.pause(0.0001)
 
             break
         print("Total cost: ", self.total_cost)
@@ -672,8 +683,54 @@ class Grid:
 
         return self.total_cost, self.amt_steps
 
-        # self.showGrid()
-        # plt.show()
+        self.showGrid()
+        plt.show()
+
+    def simulation(self):
+        print(self.n_search)
+        cnt = 0
+        while True:
+            # while not all the search ants have been released, release them
+            while self.n_search != 0:
+                self.release_ant('s')
+                self.renew_board()
+
+            # if no search ant has returned, just keep updating the board
+            while self.return_1 == False:
+                self.renew_board()
+
+            # as long as the food location is not empty and ???
+            while self.food_location != {} and len(self.ants) != 0:
+
+                # if not all the work ants have been released, release them
+                while self.n_work != 0:
+                    cnt += 1
+                    if cnt % 5 == 0 and len(self.found_food_sources) != 0:
+                        self.release_ant('w')
+
+                    self.renew_board()
+
+
+                print(self.found_food_sources)
+                # kep on renewing the board
+                if len(self.found_food_sources) == 0:
+                    break
+
+                cnt += 1
+                if cnt == 400:
+                    return 0, 0
+                print(cnt)
+
+                self.renew_board()
+
+            break
+        print("Total cost: ", self.total_cost)
+        print("Amount of board renewals: ", self.amt_steps)
+
+        return self.total_cost, self.amt_steps
+
+        self.showGrid()
+        plt.show()
 
 
     def showGrid(self):
@@ -723,29 +780,27 @@ def make_data(grid, strength, fade):
     data_cost = []
     data_board = []
 
-    search = 0
+    search = 8
     work = 10
 
     # run the test for 10 different ratios
     for i in range(10):
-
-        # make the environment for the simulation
-        world = Grid([grid, strength, fade, search, work])
-        world.setNestLocation((14,3))
-        world.setFoodSource((2,1), 6)
-        world.setFoodSource((11,18), 6)
-        world.setFoodSource((8,8), 6)
-
-        # change the ratio of work:search ants for next iteration
-        search += 1
-        work -= 1
 
         total_cost = 0
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
         for i in range(100):
+            # make the environment for the simulation
+            world = Grid([grid, strength, fade, search, work])
+            world.setNestLocation((14,3))
+            world.setFoodSource((2,1), 6)
+            world.setFoodSource((11,18), 6)
+            world.setFoodSource((8,8), 6)
+
             cost, board = world.simulation()
+            if cost == 0 and board == 0:
+                continue
             total_cost += cost
             total_board += board
 
@@ -753,6 +808,10 @@ def make_data(grid, strength, fade):
         # add the average to a the data list
         data_cost.append(total_cost/100)
         data_board.append(total_board/100)
+
+        # change the ratio of work:search ants for next iteration
+        search += 1
+        work -= 1
 
     return data_cost, data_board
 
@@ -784,6 +843,7 @@ def ttest_pvalue(pop1, pop2):
 
 
 world = Grid([25, 0.1, 0.005, 8, 15])
+print("uuuuh")
 world.setNestLocation((14,3))
 world.setFoodSource((2,1), 6)
 world.setFoodSource((11,18), 6)
