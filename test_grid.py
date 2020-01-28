@@ -809,15 +809,15 @@ def make_data(grid, strength, fade):
 This function will plot the standard deviations of 2 populations. The
 input is two arrays containing tuples.
 '''
-def plot_distributions(pop1):#, pop2):
+def plot_distributions(pop1, pop2, term1, term2):
     # plot the histograms and distibution of the data
     sns.distplot(pop1)
-    #sns.distplot(pop2)
+    sns.distplot(pop2)
 
     # add labels
     plt.title('Distribution of cost per worker:searcher ants')
-    plt.xlabel('Ratio workers:searchers')
-    plt.legend(labels=['test_label1'])#,'test_label2'])
+    plt.xlabel('Ratio workers:searchers (%)')
+    plt.legend(labels=['Population ' + term1,'Population ' + term2])
     plt.ylabel('Cost')
     plt.show()
 
@@ -833,10 +833,12 @@ def ttest_pvalue(pop1, pop2):
 
 a = [15.812000000000086, 24.11600000000023, 32.53600000000034, 41.981000000000385, 40.81100000000044, 40.42100000000045, 46.508000000000436, 49.846000000000394, 47.188000000000486, 50.36700000000042]
 
+b =[10.54400000000005, 15.386000000000056, 15.502000000000088, 20.938000000000105, 22.395000000000167, 22.613000000000135, 23.635000000000126, 24.231000000000144, 24.222000000000165, 23.390000000000146]
 
-plot_distributions(a)
+plot_distributions(a, b, 'with 1 food source', 'with 2 food source')
 
 
+print(ttest_pvalue(a,b))
 
 #
 # world = Grid([25, 0.1, 0.005, 8, 15])
