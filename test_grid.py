@@ -400,6 +400,7 @@ class Grid:
             if p in self.food_neighbours():
                 p_food_n.append(p)
 
+
             # adds neighbours of the location next to food to the possible food steps
             if p in self.food_moore_neigh():
                 p_moore.append(p)
@@ -517,7 +518,9 @@ class Grid:
                     self.grid_no_ants[j,i] = 0
                     self.grid[j,i] = 0
                     self.food_location.pop((i,j))
-                    self.found_food_sources.remove((i,j))
+
+                    if (i,j) in self.found_food_sources:
+                        self.found_food_sources.remove((i,j))
 
 
         # determine new location of each ant, set this location as ant_value
@@ -610,13 +613,11 @@ class Grid:
                 self.renew_board()
                 drawnow(self.showGrid)
                 plt.pause(0.0001)
-            print("jo")
+
             # as long as the food location is not empty and ???
             while self.food_location != {}:
-                print("iets anders")
                 # if not all the work ants have been released, release them
                 while self.n_work != 0:
-                    print(self.n_work)
                     cnt += 1
 
                     if len(self.found_food_sources) == 0:
@@ -629,15 +630,13 @@ class Grid:
                     drawnow(self.showGrid)
                     plt.pause(0.0001)
 
-                if len(self.ants) != 0:
-                    print("ok")
-                    break
+                #if len(self.ants) != 0:
+                 #   break
 
 
 
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
-                    print('hmmm')
                     break
 
                 iterations_counter += 1
@@ -666,6 +665,8 @@ class Grid:
     This function is used for the collection of data and is fast for testing.
     '''
     def simulation(self):
+        print("Search ants: ", self.n_search)
+        print("Work ants:" , self.n_work)
         cnt = 0
         iterations_counter = 0
         while True:
@@ -689,9 +690,9 @@ class Grid:
 
                     self.renew_board()
 
-                if len(self.ants) != 0:
-                    break
-
+                #if len(self.ants) != 0:
+                #    break
+                
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
                     break
@@ -802,22 +803,24 @@ def make_data(grid, strength, fade):
 
     return data_cost, data_board
 
-# print(make_data(25, 0.1, 0.005))
+
+#print(make_data(25, 0.1, 0.005))
+
 
 
 '''
 This function will plot the standard deviations of 2 populations. The
 input is two arrays containing tuples.
 '''
-def plot_distributions(pop1):#, pop2):
+def plot_distributions(pop1, pop2, term1, term2):
     # plot the histograms and distibution of the data
     sns.distplot(pop1)
-    #sns.distplot(pop2)
+    sns.distplot(pop2)
 
     # add labels
     plt.title('Distribution of cost per worker:searcher ants')
-    plt.xlabel('Ratio workers:searchers')
-    plt.legend(labels=['test_label1'])#,'test_label2'])
+    plt.xlabel('Ratio workers:searchers (%)')
+    plt.legend(labels=['Population ' + term1,'Population ' + term2])
     plt.ylabel('Cost')
     plt.show()
 
@@ -830,24 +833,40 @@ def ttest_pvalue(pop1, pop2):
     return ttest[0], ttest[1]
 
 
+print("Welcome to the Antcolony sim.")
+print("To run the simulation, collect data and show graphs, enter: run simulation")
+print("To see a visualisation of one run of the simulation, enter: show visual ")
+
+correct_input = False
+
+
+while not correct_input:
+    option = input()
+
+    if option == 'show visual':
+        world = Grid([25, 0.1, 0.005, 2, 8])
+        world.setNestLocation((14,3))
+        world.setFoodSource((2,1), 6)
+        world.setFoodSource((11,18), 6)
+        world.visualSimulation()
+
+        correct_input = True
+
+    elif option == 'run simulation':
+        make_data(25, 0.1, 0.005)
+
+        correct_input = True
+        
+    else:
+        print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
+
 
 a = [15.812000000000086, 24.11600000000023, 32.53600000000034, 41.981000000000385, 40.81100000000044, 40.42100000000045, 46.508000000000436, 49.846000000000394, 47.188000000000486, 50.36700000000042]
 
+b =[10.54400000000005, 15.386000000000056, 15.502000000000088, 20.938000000000105, 22.395000000000167, 22.613000000000135, 23.635000000000126, 24.231000000000144, 24.222000000000165, 23.390000000000146]
 
-plot_distributions(a)
+plot_distributions(a, b, 'with 1 food source', 'with 2 food source')
 
 
+print(ttest_pvalue(a,b))
 
-#
-# world = Grid([25, 0.1, 0.005, 8, 15])
-# print("uuuuh")
-# world.setNestLocation((14,3))
-# world.setFoodSource((2,1), 6)
-# world.setFoodSource((11,18), 6)
-# world.setFoodSource((8,8), 6)
-#
-#
-#
-#
-# world.showGrid()
-# world.simulation()
