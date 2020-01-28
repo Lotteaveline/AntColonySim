@@ -775,6 +775,7 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
+
         amount_iterations = 50
         for i in range(amount_iterations):
             # make the environment for the simulation
@@ -860,10 +861,12 @@ while not correct_input:
 
         correct_input = True
 
+
     elif option == 'run simulation':
         param = []
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
+
         #cost, boards = make_data(25, 0.1, 0.005, food_sources)
         #cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
         cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
@@ -872,16 +875,42 @@ while not correct_input:
         #plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
         #plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
         #plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
+
+
+        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        # with open("cost.txt", "w") as output:
+        #     output.write(str(cost))
+        #     output.write(str(boards))
+        #
+        # cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        # with open("cost1.txt", "w") as output:
+        #     output.write(str(cost1))
+        #     output.write(str(boards1))
+
+        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        with open("cost2.txt", "w") as output:
+            output.write(str(cost2))
+            output.write(str(boards2))
+        #
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
+
+        #end = time.time()
+
         correct_input = True
-        print(start)
-        print(end)
-        food_t, food_p = ttest_pvalue(cost, cost1)
+
+        #print(start)
+        #print(end)
+
+        #food_t, food_p = ttest_pvalue(cost, cost1)
         strength_t, strength_p = ttest_pvalue(cost, cost2)
-        fade_t, fade_p = ttest_pvalue(cost, cost3)
+        #fade_t, fade_p = ttest_pvalue(cost, cost3)
 
         #print("The t-value for food:" + food_t + "The p-value for food" + food_p)
         print("The t-value for strength:" + strength_t + "The p-value for strength" + strength_p)
-        print("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
+        #print("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
 
         # print(cost)
         # print(cost1)
@@ -889,8 +918,3 @@ while not correct_input:
         # print(cost3)
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
-
-
-
-
-print(ttest_pvalue(a,b))
