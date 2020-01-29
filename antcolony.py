@@ -5,35 +5,39 @@ import matplotlib
 from scipy import stats
 import seaborn as sns
 
-import grid
-import ants
+from grid import Grid
+from ants import Ant
 
 '''
 This function collects the data for the different ratios of ants. It runs the
 simulation 100 times for every ratio from 10:0 to 0:10 workers:searchers.
 '''
-
-def make_data(grid, strength, fade):
+def make_data(grid, strength, fade, food_sources):
     # initialize the data list and start values of worker and search ants
     data_cost = []
     data_board = []
 
     search = 1
-    work = 10
+    work = 9
 
     # run the test for 10 different ratios
-    for i in range(10):
+    for i in range(9):
 
         total_cost = 0
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        for i in range(100):
+
+        amount_iterations = 100
+        for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
+
+            for food_source in food_sources:
+                world.setFoodSource(food_source, 6)
+
             world.setNestLocation((14,3))
-            world.setFoodSource((2,1), 6)
-            world.setFoodSource((11,18), 6)
+
             #world.setFoodSource((8,8), 6)
 
 
@@ -42,20 +46,22 @@ def make_data(grid, strength, fade):
 
             cost, board = world.simulation()
             if cost == 0 and board == 0:
-                continue
+                cost = 200
+                board = 500
             total_cost += cost
             total_board += board
 
 
         # add the average to a the data list
-        data_cost.append(total_cost/100)
-        data_board.append(total_board/100)
+        data_cost.append(total_cost/amount_iterations)
+        data_board.append(total_board/amount_iterations)
 
         # change the ratio of work:search ants for next iteration
         search += 1
         work -= 1
 
     return data_cost, data_board
+
 
 
 '''
@@ -136,7 +142,7 @@ while not correct_input:
         cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
         with open("cost3.txt", "w") as output:
             output.write(str(cost3))
-            output.write(str(boards3))))
+            output.write(str(boards3))
 
 
         correct_input = True

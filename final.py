@@ -89,6 +89,7 @@ fade_t, fade_p = ttest_pvalue(cost, cost3)
 def scatter_boiii(cost, term, titel):
     x = list(range(1,10))
     plt.scatter(x, cost)
+    plt.yscale('linear')
     plt.plot(x,cost, color = 'orange')
     plt.title('Distribution of cost per worker:searcher ants')
     plt.xlabel('Ratio workers:searchers (%)')
