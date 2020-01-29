@@ -837,8 +837,6 @@ This function returns the t-test value and the p-value between two populations.
 '''
 def ttest_pvalue(pop1, pop2):
     ttest = stats.ttest_ind(pop1, pop2)
-    print("This is the t-value:" + ttest[0])
-    print("This is the p-value:" + ttest[1])
     return ttest[0], ttest[1]
 
 
@@ -867,54 +865,47 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        #cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        #cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        #cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        end = time.time()
-        #plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
-        #plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
-        #plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
+        cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        with open("cost.txt", "w") as output:
+            output.write(str(cost))
+            output.write(str(boards))
 
-
-        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        # with open("cost.txt", "w") as output:
-        #     output.write(str(cost))
-        #     output.write(str(boards))
-        #
-        # cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
-        # with open("cost1.txt", "w") as output:
-        #     output.write(str(cost1))
-        #     output.write(str(boards1))
+        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        with open("cost1.txt", "w") as output:
+            output.write(str(cost1))
+            output.write(str(boards1))
 
         cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
         with open("cost2.txt", "w") as output:
             output.write(str(cost2))
             output.write(str(boards2))
-        #
-        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        # with open("cost3.txt", "w") as output:
-        #     output.write(str(cost3))
-        #     output.write(str(boards3))
 
-        #end = time.time()
+        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        with open("cost3.txt", "w") as output:
+            output.write(str(cost3))
+            output.write(str(boards3))
+
+        end = time.time()
+
+
+        plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
+        plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
+        plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
 
         correct_input = True
 
-        #print(start)
-        #print(end)
 
-        #food_t, food_p = ttest_pvalue(cost, cost1)
+        food_t, food_p = ttest_pvalue(cost, cost1)
         strength_t, strength_p = ttest_pvalue(cost, cost2)
-        #fade_t, fade_p = ttest_pvalue(cost, cost3)
+        fade_t, fade_p = ttest_pvalue(cost, cost3)
 
-        #print("The t-value for food:" + food_t + "The p-value for food" + food_p)
+        print("The t-value for food:" + food_t + "The p-value for food" + food_p)
         print("The t-value for strength:" + strength_t + "The p-value for strength" + strength_p)
-        #print("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
+        print("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
 
-        # print(cost)
-        # print(cost1)
+        print(cost)
+        print(cost1)
         print(cost2)
-        # print(cost3)
+        print(cost3)
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
