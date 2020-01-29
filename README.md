@@ -9,7 +9,7 @@ works. The grid size, pheromone strength, pheromone fade, amount of worker and
 searcher ants can all be altered.
 
 ## VISUALS
-[Grid visualisation](/grid_pheromone.png)
+[Grid visualisation](/images/grid_pheromone.png)
 
 
 ## INSTALLATION
