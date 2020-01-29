@@ -864,30 +864,30 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        with open("cost.txt", "w") as output:
-            output.write(str(cost))
-            output.write(str(boards))
+        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        # with open("cost.txt", "w") as output:
+        #     output.write(str(cost))
+        #     output.write(str(boards))
 
         cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
         with open("cost1.txt", "w") as output:
             output.write(str(cost1))
             output.write(str(boards1))
+        #
+        # cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        # with open("cost2.txt", "w") as output:
+        #     output.write(str(cost2))
+        #     output.write(str(boards2))
+        #
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
 
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        with open("cost2.txt", "w") as output:
-            output.write(str(cost2))
-            output.write(str(boards2))
 
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        with open("cost3.txt", "w") as output:
-            output.write(str(cost3))
-            output.write(str(boards3))
-
-
-        food_t, food_p = ttest_pvalue(cost, cost1)
-        strength_t, strength_p = ttest_pvalue(cost, cost2)
-        fade_t, fade_p = ttest_pvalue(cost, cost3)
+        # food_t, food_p = ttest_pvalue(cost, cost1)
+        # strength_t, strength_p = ttest_pvalue(cost, cost2)
+        # fade_t, fade_p = ttest_pvalue(cost, cost3)
 
         ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
 
