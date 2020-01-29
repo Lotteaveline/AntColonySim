@@ -28,7 +28,7 @@ def make_data(grid, strength, fade, food_sources):
 
         # determine the amount of boards and the cost of 100 iterations
 
-        amount_iterations = 1
+        amount_iterations = 100
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -122,17 +122,17 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        # this collects the baseline data and puts it in txt file
-        cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        with open("cost.txt", "w") as output:
-            output.write(str(cost))
-            output.write(str(boards))
+        # # this collects the baseline data and puts it in txt file
+        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        # with open("cost.txt", "w") as output:
+        #     output.write(str(cost))
+        #     output.write(str(boards))
 
-        # this collects the two food sources data and puts it in txt file
-        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
-        with open("cost1.txt", "w") as output:
-            output.write(str(cost1))
-            output.write(str(boards1))
+        # # this collects the two food sources data and puts it in txt file
+        # cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        # with open("cost1.txt", "w") as output:
+        #     output.write(str(cost1))
+        #     output.write(str(boards1))
 
         # this collects the higher pheromone strength data and puts in txt file
         cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
@@ -141,11 +141,12 @@ while not correct_input:
             output.write(str(boards2))
 
         # this collects the higher pheromone fade data and puts it in txt file
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        with open("cost3.txt", "w") as output:
-            output.write(str(cost3))
-            output.write(str(boards3))
-
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
+        print(cost2)
+        print(boards2)
 
         correct_input = True
 

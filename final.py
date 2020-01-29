@@ -18,11 +18,12 @@ import time
 from statistics import stdev
 
 from scipy.stats import norm
+from scipy.interpolate import make_interp_spline, BSpline
 
 cost = [35.1629999999999, 65.93599999999932, 60.98299999999982, 63.50499999999972, 58.5399999999997, 81.97399999999936, 71.29199999999955, 64.08199999999961, 69.51199999999966]
 
-cost2 = [62.30099999999966, 98.12499999999922, 110.58899999999875, 102.2749999999997, 102.4589999999991, 88.06799999999899, 67.72599999999944, 70.39599999999965, 70.13599999999973]
-cost3 = [97.85099999999964, 109.52099999999947, 105.75499999999964, 110.6309999999996, 115.39099999999937, 89.23599999999898, 79.57199999999912, 67.2249999999997, 65.99899999999984]
+cost2 = [65.8379999999995, 101.05799999999925, 102.88199999999928, 101.46599999999917, 115.79899999999866, 92.93499999999878, 86.93799999999878, 73.54599999999961, 70.94599999999967]
+
 
 
 
@@ -43,6 +44,7 @@ def plot_distributions(pop1, pop2, term1, term2, titel):
     plt.xlabel('Ratio workers:searchers (%)')
     plt.legend(labels=['Population ' + term1,'Population ' + term2])
     plt.ylabel('Cost')
+
     plt.savefig(titel)
     plt.show()
 
@@ -58,7 +60,7 @@ def ttest_pvalue(pop1, pop2):
 
 #food_t, food_p = ttest_pvalue(cost, cost1)
 strength_t, strength_p = ttest_pvalue(cost, cost2)
-fade_t, fade_p = ttest_pvalue(cost, cost3)
+#fade_t, fade_p = ttest_pvalue(cost, cost3)
 
 # print(food_t)
 # print(food_p)
@@ -83,9 +85,12 @@ def scatter_boiii(cost, term, titel):
     x = list(range(1,10))
     plt.scatter(x, cost)
     plt.yscale('linear')
-    plt.plot(x,cost, color = 'orange')
+    xnew = np.linspace(min(x), max(x),300) 
+    spl = make_interp_spline(x, cost, k=3) #BSpline object
+    power_smooth = spl(xnew)
+    plt.plot(xnew,power_smooth, color = 'orange')
     plt.title('Distribution of cost per worker:searcher ants')
-    plt.xlabel('Ratio workers:searchers (%)')
+    plt.xlabel('Amount workers:searchers (total=10)')
     plt.legend(labels=['Population ' + term])#,'Population ' + term2])
     plt.ylabel('Cost')
     plt.savefig(titel)
@@ -94,4 +99,4 @@ def scatter_boiii(cost, term, titel):
 scatter_boiii(cost, 'Baseline', 'baseline.png')
 #scatter_boiii(cost1, 'Two food sources', 'two_food_boisss.png')
 scatter_boiii(cost2, 'Higher pheromone strength', 'high_on_pheromone.png')
-scatter_boiii(cost3, 'Higher fading rate of pheromone', 'fading.png')
+#scatter_boiii(cost3, 'Higher fading rate of pheromone', 'fading.png')
