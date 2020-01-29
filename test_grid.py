@@ -775,7 +775,7 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-        amount_iterations = 50
+        amount_iterations = 100
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -863,34 +863,33 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        with open("cost.txt", "w") as output:
-            output.write(str(cost))
-            output.write(str(boards))
+        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        # with open("cost.txt", "w") as output:
+        #     output.write(str(cost))
+        #     output.write(str(boards))
 
-        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
-        with open("cost1.txt", "w") as output:
-            output.write(str(cost1))
-            output.write(str(boards1))
+        # cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        # with open("cost1.txt", "w") as output:
+        #     output.write(str(cost1))
+        #     output.write(str(boards1))
 
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        with open("cost2.txt", "w") as output:
-            output.write(str(cost2))
-            output.write(str(boards2))
+        # cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        # with open("cost2.txt", "w") as output:
+        #     output.write(str(cost2))
+        #     output.write(str(boards2))
 
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        with open("cost3.txt", "w") as output:
-            output.write(str(cost3))
-            output.write(str(boards3))
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
 
-        end = time.time()
+        cost = [35.1629999999999, 65.93599999999932, 60.98299999999982, 63.50499999999972, 58.5399999999997, 81.97399999999936, 71.29199999999955, 64.08199999999961, 69.51199999999966]
 
-        print(cost)
-        print(cost1)
-        print(cost2)
-        print(cost3)
+        
+        cost2 = [62.30099999999966, 98.12499999999922, 110.58899999999875, 102.2749999999997, 102.4589999999991, 88.06799999999899, 67.72599999999944, 70.39599999999965, 70.13599999999973]
+        cost3 = [97.85099999999964, 109.52099999999947, 105.75499999999964, 110.6309999999996, 115.39099999999937, 89.23599999999898, 79.57199999999912, 67.2249999999997, 65.99899999999984]
 
-        plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
+        #plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
         plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
         plot_distributions(cost, cost3, 'fade of 0.005', 'fade of 0.01', ' diff_pher_fade.png')
 
