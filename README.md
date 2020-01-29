@@ -31,10 +31,12 @@ To run our code run "antcolony.py" as python3 script and choose one of the optio
 $ python3 antcolony.py    
 * run simulation - run the simulation, collect the data and plot the graphs
 * show visual - visualizes the grids of the way the ants walk
+(WARNING: run simulation will take at least 3 hours to fully run)
+
 
 ## CONTRIBUTION
 We are open to contributions and if you want to do so, you can email us on the
-following mail adres: lotteavelien@live.nl
+following mail address: lotteavelien@live.nl
 
 ## AUTHORS AND ACKNOWLEDGEMENT
 Nienke Duetz, Ghislaine van den Boogerd and Lotte Bottema have made this project
