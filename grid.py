@@ -232,16 +232,19 @@ class Grid:
 
         probability_distribution = []
 
-        # generate probability distribution for every possible step which contains pheromones
+        # generate probability distribution for every possible step which 
+        # contains pheromones
         for pos in pos_step:
             prob_dis = (self.get_pheromone(pos))**2/pos_step_sum
             probability_distribution.append(prob_dis)
 
-        # if there are no steps that are further away from the origin, take a random step to a neighbour
+        # if there are no steps that are further away from the origin, take a 
+        # random step to a neighbour
         if possible_steps == []:
             return random.choice(self.check_neighbours(coord))
 
-        # if there are no steps that contain pheromones, create a probabiltiy distribution over all steps
+        # if there are no steps that contain pheromones, create a probabiltiy 
+        # distribution over all steps
         if pos_step == []:
             pos_step = possible_steps
             prob_value = 1/len(possible_steps)
@@ -279,28 +282,35 @@ class Grid:
                 p_food_n.append(p)
 
 
-            # adds neighbours of the location next to food to the possible food steps
+            # adds neighbours of the location next to food to the possible food 
+            # steps
             if p in self.food_moore_neigh():
                 p_moore.append(p)
 
-            # ?? kunnen we dit op een manier binnen de 80 krijgen??
-            if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) < self.ant_value+self.pheromone_strength:
+            # The search ant prefers cells without pheromones
+            if self.get_kind(p) == 0 or self.ant_value < self.get_kind(p) \
+            < self.ant_value + self.pheromone_strength:
                 pos_step.append(p)
 
-        # if there are possible steps which are a food neighbour pick one at random
+        # if there are possible steps which are a food neighbour pick one at 
+        # random
         if p_food_n != []:
             return random.choice(p_food_n)
 
-        # if there are possible steps which are a neighbour of a food neighbour pick one at random
+        # if there are possible steps which are a neighbour of a food neighbour 
+        # pick one at random
         elif p_moore != []:
             return random.choice(p_moore)
 
-        # if there are possible steps which dont have pheromones pick one at random
+        # if there are possible steps which dont have pheromones pick one at 
+        # random
         elif pos_step != []:
             return random.choice(pos_step)
 
-        # ???
-        elif origin != self.nest_location and self.next_location in self.check_neighbours(coord):
+        # If the ant's origin is a food source and it is next to the nest,
+        # the ant returns to the nest
+        elif origin != self.nest_location and self.next_location \
+        in self.check_neighbours(coord):
             return self.next_location
 
         # if all options fail just pick a random step
@@ -315,8 +325,8 @@ class Grid:
             food_neigh.append(self.check_neighbours(food_loc))
         return sum(food_neigh, [])
 
-    # returns list of all neighbours of all neighbours of a food location, all neighbours for
-    # every food location are returned in one list
+    # returns list of all neighbours of all neighbours of a food location, 
+    # all neighbours for every food location are returned in one list
     def food_moore_neigh(self):
         moore = []
         for n in self.food_neighbours():
@@ -392,7 +402,8 @@ class Grid:
                 if 0 < cell_value <= 1:
                     self.pheromoneFade(curr_cell)
 
-                if (i,j) in self.food_location and self.food_location[(i,j)] == 0:
+                if (i,j) in self.food_location and \
+                self.food_location[(i,j)] == 0:
                     self.grid_no_ants[j,i] = 0
                     self.grid[j,i] = 0
                     self.food_location.pop((i,j))
@@ -416,11 +427,13 @@ class Grid:
                 if ant_location in self.food_location.keys():
                     ant.changeOrigin(ant_location)
                     self.total_cost -= self.food_reward
-                    self.food_location[ant_location] =  self.food_location[ant_location] - 1
+                    self.food_location[ant_location] =  \
+                        self.food_location[ant_location] - 1
 
                     # check if search ant
                     if ant.getKind() == 's':
-                        ant.findShortestPath(self.nest_location, ant.getOrigin())
+                        ant.findShortestPath(self.nest_location, \
+                                                ant.getOrigin())
 
                     # check if worker ant
                     if ant.getKind() == 'w':
@@ -429,16 +442,19 @@ class Grid:
 
                 # ant is on nest
                 elif ant_location == self.nest_location:
-                    if ant.getKind() == 's' and ant.getOrigin() == self.nest_location:
+                    if ant.getKind() == 's' and \
+                    ant.getOrigin() == self.nest_location:
                         new_cell = self.decide_step_search(ant)
                         ant.addNextStep(new_cell)
 
-                    if ant.getKind() == 'w' and ant.getOrigin() == self.nest_location:
+                    if ant.getKind() == 'w' and \
+                    ant.getOrigin() == self.nest_location:
                         new_cell = self.decide_step_worker(ant)
                         ant.addNextStep(new_cell)
 
 
-                # ant is somewhere on the board that is not a nest or food source
+                # ant is somewhere on the board that is not a nest or food 
+                # source
                 else:
                     # Check if search ant
                     if ant.getKind() == 's':
@@ -456,7 +472,8 @@ class Grid:
 
             # If after the step the ant is back at the nest location,
             # the ant has done its job and can be removed
-            if new_location == self.nest_location and ant.getOrigin() != self.nest_location:
+            if new_location == self.nest_location and \
+            ant.getOrigin() != self.nest_location:
                 #self.total_cost -= self.return_reward
                 self.return_of_ant(ant)
                 continue
@@ -492,7 +509,7 @@ class Grid:
                 drawnow(self.showGrid)
                 plt.pause(0.0001)
 
-            # as long as the food location is not empty and ???
+            # as long as the food location is not empty
             while self.food_location != {}:
                 # if not all the work ants have been released, release them
                 while self.n_work != 0:
@@ -508,8 +525,8 @@ class Grid:
                     drawnow(self.showGrid)
                     plt.pause(0.0001)
 
-                #if len(self.ants) != 0:
-                 #   break
+                if len(self.ants) == 0:
+                    break
 
 
 
@@ -557,7 +574,7 @@ class Grid:
             while self.return_1 == False:
                 self.renew_board()
 
-            # as long as the food location is not empty and ???
+            # as long as the food location is not empty
             while self.food_location != {}:
 
                 # if not all the work ants have been released, release them
@@ -568,8 +585,8 @@ class Grid:
 
                     self.renew_board()
 
-                #if len(self.ants) != 0:
-                #    break
+                if len(self.ants) == 0:
+                    break
 
                 # kep on renewing the board
                 if len(self.found_food_sources) == 0:
@@ -600,14 +617,18 @@ class Grid:
         pheromone_amount = 80
 
         # Blue gradient for pheromones: the darker the blue, the more pheromones
-        pher_colors = cm.Blues(np.linspace(0, 1.00001, num=pheromone_amount)).tolist()
+        pher_colors = cm.Blues(np.linspace(0, 1.00001, \
+                                num=pheromone_amount)).tolist()
         pher_bounds = np.linspace(0,1.1,num=pheromone_amount+1).tolist()
 
         # Other color: nothing, ant, nest and food source
-        other_colors = ['white', 'black', 'white', 'peru', 'white', 'forestgreen']
+        other_colors = ['white', 'black', 'white', \
+                        'peru', 'white', 'forestgreen']
 
         # Boundaries for the values of the other colors
-        other_bounds = [1.00001, self.ant_value - 0.01, 11.00001, self.nest_value - 0.00001, self.nest_value + 0.0001, 99.99999, 100.0]
+        other_bounds = [1.00001, self.ant_value - 0.01, 11.00001, \
+                        self.nest_value - 0.00001, \
+                        self.nest_value + 0.0001, 99.99999, 100.0]
         total_colors = sum([pher_colors, other_colors], [])
         total_bounds = sum([pher_bounds, other_bounds], [])
 
@@ -619,7 +640,8 @@ class Grid:
         # Create a cmap of all the colors
         cmap = mpl.colors.ListedColormap(total_colors)
         norm = mpl.colors.BoundaryNorm(total_bounds, cmap.N, clip=True)
-        img = plt.imshow(self.grid,interpolation='nearest', cmap=cmap, norm=norm)
+        img = plt.imshow(self.grid,interpolation='nearest', \
+                        cmap=cmap, norm=norm)
 
         ax = plt.gca()
 
