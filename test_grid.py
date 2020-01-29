@@ -793,7 +793,7 @@ def make_data(grid, strength, fade, food_sources):
 
             cost, board = world.simulation()
             if cost == 0 and board == 0:
-                cost = 250
+                cost = 200
                 board = 500
             total_cost += cost
             total_board += board
@@ -850,13 +850,13 @@ correct_input = False
 
 while not correct_input:
     option = input()
-
+    #start = time.time()
     if option == 'show visual':
-        world = Grid([25, 0.1, 0.005, 2, 8])
-        world.setNestLocation((14,3))
-        world.setFoodSource((2,1), 6)
-        world.setFoodSource((11,18), 6)
-        world.visualSimulation()
+        while True:
+            world = Grid([25, 0.1, 0.005, 1, 8])
+            world.setNestLocation((14,3))
+            world.setFoodSource((2,1), 6)
+            world.visualSimulation()
 
         correct_input = True
 
@@ -865,15 +865,15 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
         #cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        #cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
+        cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
         #cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        #cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
 
         
         # print(cost1)
         # print(cost2)
-        print(cost3)
-        print(boards3)
+        print(cost1)
+        print(boards1)
 
         plot_distributions(cost, cost1, 'with one food source', 'with two food sources', 'diff_food_source.png')
         plot_distributions(cost, cost2, 'strength of 0.1', 'strength of 0.2', 'diff_pher_strength.png')
@@ -882,17 +882,12 @@ while not correct_input:
 
         food_t, food_p = ttest_pvalue(cost, cost1)
         strength_t, strength_p = ttest_pvalue(cost, cost2)
-        fade_t, fade_p = ttest_pvalue(cost, cost3)
+        #fade_t, fade_p = ttest_pvalue(cost, cost3)
 
-        print("The t-value for food:" + food_t + "The p-value for food" + food_p)
-        print("The t-value for strength:" + food_t + "The p-value for strength" + food_p)
-        print("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
+        #print("The t-value for food:" + food_t + "The p-value for food" + food_p)
+        print("The t-value for strength:" + strength_t + "The p-value for strength" + strength_p)
+        #print("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
 
         
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
-
-
-
-
-print(ttest_pvalue(a,b))
