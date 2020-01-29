@@ -126,7 +126,6 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        
         # this collects the baseline data and puts it in txt file
         cost, boards = make_data(25, 0.1, 0.005, food_sources)
         with open("cost.txt", "w") as output:

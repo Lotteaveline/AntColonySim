@@ -33,10 +33,9 @@ $ python3 antcolony.py
 * show visual - visualizes the grids of the way the ants walk
 (WARNING: run simulation will take at least 3 hours to fully run)
 
-
 ## CONTRIBUTION
 We are open to contributions and if you want to do so, you can email us on the
-following mail address: lotteavelien@live.nl
+following mail address: antcolonysim@gmail.com
 
 ## AUTHORS AND ACKNOWLEDGEMENT
 Nienke Duetz, Ghislaine van den Boogerd and Lotte Bottema have made this project
