@@ -775,7 +775,6 @@ def make_data(grid, strength, fade, food_sources):
         total_board = 0
 
         # determine the amount of boards and the cost of 100 iterations
-
         amount_iterations = 100
         for i in range(amount_iterations):
             # make the environment for the simulation
@@ -873,21 +872,21 @@ while not correct_input:
         with open("cost1.txt", "w") as output:
             output.write(str(cost1))
             output.write(str(boards1))
+        #
+        # cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        # with open("cost2.txt", "w") as output:
+        #     output.write(str(cost2))
+        #     output.write(str(boards2))
+        #
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
 
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        with open("cost2.txt", "w") as output:
-            output.write(str(cost2))
-            output.write(str(boards2))
 
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        with open("cost3.txt", "w") as output:
-            output.write(str(cost3))
-            output.write(str(boards3))
-
-
-        food_t, food_p = ttest_pvalue(cost, cost1)
-        strength_t, strength_p = ttest_pvalue(cost, cost2)
-        fade_t, fade_p = ttest_pvalue(cost, cost3)
+        # food_t, food_p = ttest_pvalue(cost, cost1)
+        # strength_t, strength_p = ttest_pvalue(cost, cost2)
+        # fade_t, fade_p = ttest_pvalue(cost, cost3)
 
         ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
 

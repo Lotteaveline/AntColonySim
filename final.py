@@ -18,19 +18,13 @@ import time
 from statistics import stdev
 
 from scipy.stats import norm
+from scipy.interpolate import make_interp_spline, BSpline
 
-cost = [29.40199999999977, 55.60799999999975, 69.1879999999993, 75.95399999999943, 58.23599999999997, 63.727999999999454, 76.64599999999909, 68.73999999999944, 62.928000000000104]
-boards = [228.82, 228.34, 212.74, 212.9, 166.2, 155.38, 170.0, 143.44, 131.72]
+cost = [35.1629999999999, 65.93599999999932, 60.98299999999982, 63.50499999999972, 58.5399999999997, 81.97399999999936, 71.29199999999955, 64.08199999999961, 69.51199999999966]
+
+cost2 = [65.8379999999995, 101.05799999999925, 102.88199999999928, 101.46599999999917, 115.79899999999866, 92.93499999999878, 86.93799999999878, 73.54599999999961, 70.94599999999967]
 
 
-cost1= [17.429999999999776, 56.44799999999994, 98.45400000000005, 139.56199999999998, 138.83799999999997, 166.746, 179.166, 175.09200000000004, 200.0]
-boards1 = [191.68, 221.46, 308.56, 381.6, 370.5, 433.26, 462.02, 450.34, 500.0]
-
-cost2  = [54.284999999999734, 86.56299999999963, 111.38799999999938, 111.48699999999948, 105.5279999999994, 84.54799999999904, 76.93799999999926, 74.60799999999944, 71.62399999999963]
-board3 = [280.78, 272.1, 301.39, 288.02, 260.46, 197.49, 169.48, 159.96, 145.97]
-
-cost3 = [98.54199999999966, 131.28999999999922, 118.39799999999954, 113.78599999999955, 118.16799999999925, 72.99399999999932, 71.05799999999925, 65.36599999999984, 68.95199999999971]
-boards3 = [331.5, 317.92, 286.78, 269.96, 262.72, 173.46, 158.68, 142.34, 139.98]
 
 
 
@@ -50,6 +44,7 @@ def plot_distributions(pop1, pop2, term1, term2, titel):
     plt.xlabel('Ratio workers:searchers (%)')
     plt.legend(labels=['Population ' + term1,'Population ' + term2])
     plt.ylabel('Cost')
+
     plt.savefig(titel)
     plt.show()
 
@@ -63,9 +58,9 @@ def ttest_pvalue(pop1, pop2):
 
 
 
-food_t, food_p = ttest_pvalue(cost, cost1)
+#food_t, food_p = ttest_pvalue(cost, cost1)
 strength_t, strength_p = ttest_pvalue(cost, cost2)
-fade_t, fade_p = ttest_pvalue(cost, cost3)
+#fade_t, fade_p = ttest_pvalue(cost, cost3)
 
 # print(food_t)
 # print(food_p)
@@ -90,15 +85,18 @@ def scatter_boiii(cost, term, titel):
     x = list(range(1,10))
     plt.scatter(x, cost)
     plt.yscale('linear')
-    plt.plot(x,cost, color = 'orange')
+    xnew = np.linspace(min(x), max(x),300) 
+    spl = make_interp_spline(x, cost, k=3) #BSpline object
+    power_smooth = spl(xnew)
+    plt.plot(xnew,power_smooth, color = 'orange')
     plt.title('Distribution of cost per worker:searcher ants')
-    plt.xlabel('Ratio workers:searchers (%)')
+    plt.xlabel('Amount workers:searchers (total=10)')
     plt.legend(labels=['Population ' + term])#,'Population ' + term2])
     plt.ylabel('Cost')
     plt.savefig(titel)
     plt.show()
 
 scatter_boiii(cost, 'Baseline', 'baseline.png')
-scatter_boiii(cost1, 'Two food sources', 'two_food_boisss.png')
+#scatter_boiii(cost1, 'Two food sources', 'two_food_boisss.png')
 scatter_boiii(cost2, 'Higher pheromone strength', 'high_on_pheromone.png')
-scatter_boiii(cost3, 'Higher fading rate of pheromone', 'fading.png')
+#scatter_boiii(cost3, 'Higher fading rate of pheromone', 'fading.png')
