@@ -864,10 +864,10 @@ while not correct_input:
         food_sources = [(11,18)]
         food_sources2 = [(11, 18), (2, 1)]
 
-        # cost, boards = make_data(25, 0.1, 0.005, food_sources)
-        # with open("cost.txt", "w") as output:
-        #     output.write(str(cost))
-        #     output.write(str(boards))
+        cost, boards = make_data(25, 0.1, 0.005, food_sources)
+        with open("cost.txt", "w") as output:
+            output.write(str(cost))
+            output.write(str(boards))
 
         cost1, boards1 = make_data(25, 0.1, 0.005, food_sources2)
         with open("cost1.txt", "w") as output:

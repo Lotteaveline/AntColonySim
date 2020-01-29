@@ -28,7 +28,7 @@ def make_data(grid, strength, fade, food_sources):
 
         # determine the amount of boards and the cost of 100 iterations
 
-        amount_iterations = 1
+        amount_iterations = 100
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -108,7 +108,7 @@ while not correct_input:
 
     # for the visualisation of the grids over times
     if option == 'show visual':
-        world = Grid([25, 0.1, 0.005, 1, 2])
+        world = Grid([25, 0.1, 0.005, 3, 7])
         world.setNestLocation((14,3))
         world.setFoodSource((2,1), 6)
         #world.setFoodSource((11,18), 6)
@@ -133,32 +133,32 @@ while not correct_input:
         with open("cost1.txt", "w") as output:
             output.write(str(cost1))
             output.write(str(boards1))
+        #
+        # # this collects the higher pheromone strength data and puts in txt file
+        # cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
+        # with open("cost2.txt", "w") as output:
+        #     output.write(str(cost2))
+        #     output.write(str(boards2))
+        #
+        # # this collects the higher pheromone fade data and puts it in txt file
+        # cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
+        # with open("cost3.txt", "w") as output:
+        #     output.write(str(cost3))
+        #     output.write(str(boards3))
+        #
 
-        # this collects the higher pheromone strength data and puts in txt file
-        cost2, boards2 = make_data(25, 0.2, 0.005, food_sources)
-        with open("cost2.txt", "w") as output:
-            output.write(str(cost2))
-            output.write(str(boards2))
-
-        # this collects the higher pheromone fade data and puts it in txt file
-        cost3, boards3 = make_data(25, 0.1, 0.01, food_sources)
-        with open("cost3.txt", "w") as output:
-            output.write(str(cost3))
-            output.write(str(boards3))
-
-
-        correct_input = True
-
-        # calculate the t-value and the p-value for every situation
-        food_t, food_p = ttest_pvalue(cost, cost1)
-        strength_t, strength_p = ttest_pvalue(cost, cost2)
-        fade_t, fade_p = ttest_pvalue(cost, cost3)
-
-        # print the t-value and p-value
-        ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
-        ("The t-value for fade:" + strength_t + "The p-value for fade" \
-                                 + strength_p)
-        ("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
+        # correct_input = True
+        #
+        # # calculate the t-value and the p-value for every situation
+        # food_t, food_p = ttest_pvalue(cost, cost1)
+        # strength_t, strength_p = ttest_pvalue(cost, cost2)
+        # fade_t, fade_p = ttest_pvalue(cost, cost3)
+        #
+        # # print the t-value and p-value
+        # ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
+        # ("The t-value for fade:" + strength_t + "The p-value for fade" \
+        #                          + strength_p)
+        # ("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
 
     else:
         print("Incorrect input. Please enter either 'run simulation' or \
