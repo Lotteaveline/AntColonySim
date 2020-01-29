@@ -28,7 +28,7 @@ def make_data(grid, strength, fade, food_sources):
 
         # determine the amount of boards and the cost of 100 iterations
 
-        amount_iterations = 100
+        amount_iterations = 1
         for i in range(amount_iterations):
             # make the environment for the simulation
             world = Grid([grid, strength, fade, search, work])
@@ -96,8 +96,10 @@ the graphs.
 '''
 
 print("Welcome to the Antcolony sim.")
-print("To run the simulation, collect data and show graphs, enter: run simulation")
-print("To see a visualisation of one run of the simulation, enter: show visual ")
+print("To run the simulation, collect data and show graphs, \
+        enter: run simulation")
+print("To see a visualisation of one run of the simulation, \
+        enter: show visual ")
 
 correct_input = False
 
@@ -106,10 +108,10 @@ while not correct_input:
 
     # for the visualisation of the grids over times
     if option == 'show visual':
-        world = Grid([25, 0.1, 0.005, 2, 8])
+        world = Grid([25, 0.1, 0.005, 1, 2])
         world.setNestLocation((14,3))
         world.setFoodSource((2,1), 6)
-        world.setFoodSource((11,18), 6)
+        #world.setFoodSource((11,18), 6)
         world.visualSimulation()
 
         correct_input = True
@@ -154,8 +156,10 @@ while not correct_input:
 
         # print the t-value and p-value
         ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
-        ("The t-value for fade:" + strength_t + "The p-value for fade" + strength_p)
+        ("The t-value for fade:" + strength_t + "The p-value for fade" \
+                                 + strength_p)
         ("The t-value for fade:" + fade_t + "The p-value for fade" + fade_p)
 
     else:
-        print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
+        print("Incorrect input. Please enter either 'run simulation' or \
+            'show visual'")
