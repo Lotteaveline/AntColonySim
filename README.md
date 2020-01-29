@@ -9,8 +9,10 @@ works. The grid size, pheromone strength, pheromone fade, amount of worker and
 searcher ants can all be altered.
 
 ## VISUALS
-[Grid visualisation](/AntColonySim/baseline.png)
-
+[Baseline plot](https://i.imgur.com/uQWCm3s.png)
+[Two food sources plot](https://i.imgur.com/NQHeDR3.png)
+[Pheromone Fade plot](https://i.imgur.com/BvvDoiM.png)
+[Pheromone Strength plot](https://i.imgur.com/9AOTok7.png)
 
 ## INSTALLATION
 This project uses the standard scientific python packages. It also uses the
