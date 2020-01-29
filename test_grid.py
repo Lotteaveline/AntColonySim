@@ -851,14 +851,13 @@ while not correct_input:
     option = input()
     #start = time.time()
     if option == 'show visual':
-        world = Grid([25, 0.1, 0.005, 2, 8])
-        world.setNestLocation((14,3))
-        world.setFoodSource((2,1), 6)
-        world.setFoodSource((11,18), 6)
-        world.visualSimulation()
+        while True:
+            world = Grid([25, 0.1, 0.005, 1, 8])
+            world.setNestLocation((14,3))
+            world.setFoodSource((2,1), 6)
+            world.visualSimulation()
 
         correct_input = True
-
 
     elif option == 'run simulation':
         param = []
@@ -886,18 +885,11 @@ while not correct_input:
             output.write(str(boards3))
 
 
-        correct_input = True
-
-
         food_t, food_p = ttest_pvalue(cost, cost1)
         strength_t, strength_p = ttest_pvalue(cost, cost2)
         fade_t, fade_p = ttest_pvalue(cost, cost3)
 
         ("The t-value for fade:" + food_t + "The p-value for fade" + food_p)
 
-        print(cost)
-        print(cost1)
-        # print(cost2)
-        # print(cost3)
     else:
         print("Incorrect input. Please enter either 'run simulation' or 'show visual'")
