@@ -12,7 +12,9 @@ searcher ants can all be altered.
 [Baseline plot](https://i.imgur.com/uQWCm3s.png)  
 [Two food sources plot](https://i.imgur.com/NQHeDR3.png)  
 [Pheromone Fade plot](https://i.imgur.com/BvvDoiM.png)  
-[Pheromone Strength plot](https://i.imgur.com/9AOTok7.png)  
+[Pheromone Strength plot](https://i.imgur.com/9AOTok7.png)    
+
+[Screenshot grid visualization](https://i.imgur.com/WiHAGpc.png)    
 
 ## INSTALLATION
 This project uses the standard scientific python packages. It also uses the
